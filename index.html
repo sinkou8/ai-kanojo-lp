@@ -647,7 +647,7 @@
                         <SafeImage 
                           src={activeChar.image} 
                           alt="Main Character" 
-                          className="relative w-auto h-[400px] md:h-[500px] max-w-full drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-contain rounded-3xl -translate-x-6 md:translate-x-0"
+                          className="relative w-auto h-[400px] md:h-[500px] max-w-full drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-contain rounded-3xl -translate-x-12 md:translate-x-0"
                           referrerPolicy="no-referrer"
                         />
                         <div className="absolute bottom-4 right-10 z-20">
@@ -666,7 +666,7 @@
                         {/* Scroll buttons for desktop only */}
                         <button 
                           onClick={() => scroll('left')}
-                          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"
+                          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-2 z-20 bg-white/80 p-2 rounded-full shadow-md hover:bg-white"
                         >
                           <ChevronLeft size={20} className="text-gray-600" />
                         </button>
@@ -695,7 +695,7 @@
                         
                         <button 
                           onClick={() => scroll('right')}
-                          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"
+                          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-2 z-20 bg-white/80 p-2 rounded-full shadow-md hover:bg-white"
                         >
                           <ChevronRight size={20} className="text-gray-600" />
                         </button>

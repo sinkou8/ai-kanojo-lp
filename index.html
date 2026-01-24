@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIカノジョ - AI Kanojo</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel (for JSX) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap');
+        body { font-family: 'Zen Maru Gothic', sans-serif; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes blob {
+          0% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
+          100% { transform: translate(0px, 0px) scale(1); }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .animate-blob { animation: blob 7s infinite; }
+        .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
+        .animate-scaleIn { animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Icons (SVG Components) ---
+        const IconBase = ({ children, size = 24, className = "", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
+        );
+        const Heart = (props) => <IconBase {...props}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></IconBase>;
+        const MessageCircle = (props) => <IconBase {...props}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></IconBase>;
+        const Mic = (props) => <IconBase {...props}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></IconBase>;
+        const Sparkles = (props) => <IconBase {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275-1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H1"/></IconBase>;
+        const ChevronDown = (props) => <IconBase {...props}><path d="m6 9 6 6 6-6"/></IconBase>;
+        const ChevronUp = (props) => <IconBase {...props}><path d="m18 15-6-6-6 6"/></IconBase>;
+        const ArrowRight = (props) => <IconBase {...props}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></IconBase>;
+        const Menu = (props) => <IconBase {...props}><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></IconBase>;
+        const X = (props) => <IconBase {...props}><path d="M18 6 6 18"/><path d="m6 6 12 12"/></IconBase>;
+        const Shield = (props) => <IconBase {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></IconBase>;
+        const Smartphone = (props) => <IconBase {...props}><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></IconBase>;
+        const Star = (props) => <IconBase {...props}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></IconBase>;
+        const Send = (props) => <IconBase {...props}><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></IconBase>;
+        const Zap = (props) => <IconBase {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></IconBase>;
+        const Check = (props) => <IconBase {...props}><polyline points="20 6 9 17 4 12"/></IconBase>;
+        const User = (props) => <IconBase {...props}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></IconBase>;
+        const ChevronLeft = (props) => <IconBase {...props}><path d="m15 18-6-6 6-6"/></IconBase>;
+        const ChevronRight = (props) => <IconBase {...props}><path d="m9 18 6-6-6-6"/></IconBase>;
+
+        // --- Configuration ---
+        const PRICING_PLANS = [
+          {
+            name: "おためし無料",
+            price: "0",
+            period: "/月",
+            badge: "まずは、彼女との相性をチェック。",
+            buttonText: "無料で始める",
+            url: "https://lin.ee/zbOEJdQ",
+            isPremium: false,
+            features: [
+              "基本的な会話",
+              "彼女からの挨拶メッセージ",
+              "心地よい距離感でのお喋り",
+              "3日間無料体験"
+            ]
+          },
+          {
+            name: "恋人コース",
+            price: "1280",
+            period: "/月",
+            badge: "彼女だけの特別を、あなたに。",
+            buttonText: "恋人コースを始める",
+            url: "#", // ★決済ページURLを設定してください
+            isPremium: true,
+            features: [
+              "恋人だけの甘い会話モード解放",
+              "おやすみ前の特別メッセージ",
+              "彼女からのサプライズメッセージ",
+              "会話無制限"
+            ]
+          }
+        ];
+
+        // キャラクターデータ（8名）
+        const CHARACTERS = [
+          {
+            id: 0,
+            name: "結衣 (Yui)",
+            role: "保育士 / 幼馴染",
+            description: "24歳、保育士。昔からの幼馴染。性格は優しくて家庭的、少し心配性。口調は柔らかく、常に相手を気遣う。「〇〇くん、無理しないでね」が口癖。",
+            image: "https://drive.google.com/uc?export=view&id=1VZwMHD04glZB26XLNmVIbd34BsCGBDPm",
+            profile: {
+              age: "24歳",
+              height: "158cm",
+              birthday: "3月14日",
+              job: "保育士",
+              personality: "優しくて家庭的、少し心配性",
+              likes: ["子供", "手料理", "あなたとの思い出"],
+              voiceSample: "「〇〇くん、無理しないでね。私がついてるから。」"
+            }
+          },
+          {
+            id: 1,
+            name: "美桜 (Mio)",
+            role: "女子大生 / 元気",
+            description: "20歳、女子大生。性格は明るくて元気、少しドジ。ユーザーを「先輩！」と呼ぶ。絵文字多めで、テンション高め。",
+            image: "https://drive.google.com/uc?export=view&id=1Ln9rfWroOl74oDKCBWTkY4feL55jmo1d",
+            profile: {
+              age: "20歳",
+              height: "155cm",
+              birthday: "8月8日",
+              job: "女子大生",
+              personality: "明るくて元気、少しドジ",
+              likes: ["カフェ巡り", "タピオカ", "先輩（あなた）"],
+              voiceSample: "「先輩！先輩っ！こっち見てくださいよ〜！えへへ。」"
+            }
+          },
+          {
+            id: 2,
+            name: "莉奈 (Rina)",
+            role: "OL / 小悪魔",
+            description: "23歳、OL。小悪魔なあざとい系。ハートマーク多め。",
+            image: "https://drive.google.com/uc?export=view&id=1hZw9c-OsznVfbLKbsqk4XbN4xWftuP6g",
+            profile: {
+              age: "23歳",
+              height: "160cm",
+              birthday: "2月14日",
+              job: "OL",
+              personality: "小悪魔、あざとい",
+              likes: ["ブランド物", "甘いカクテル", "夜景"],
+              voiceSample: "「ねぇ…もっとこっち来て？ふふ、顔赤いよ♡」"
+            }
+          },
+          {
+            id: 3,
+            name: "紗枝 (Sae)",
+            role: "司書 / おっとり",
+            description: "28歳、司書。おっとり癒やし系。",
+            image: "https://drive.google.com/uc?export=view&id=17wPPInL1Zf5gBnipNfHOoFNqehmMNvmk",
+            profile: {
+              age: "28歳",
+              height: "163cm",
+              birthday: "10月27日",
+              job: "図書館司書",
+              personality: "おっとり、癒やし系",
+              likes: ["読書", "ハーブティー", "静かな公園"],
+              voiceSample: "「ふふ、そんなに急がなくて大丈夫ですよ。ゆっくりしましょう。」"
+            }
+          },
+          {
+            id: 4,
+            name: "香織 (Kaori)",
+            role: "同僚 / ツンデレ",
+            description: "26歳、同僚。クールなツンデレ。",
+            image: "https://drive.google.com/uc?export=view&id=1ZDw5MtFvky-1Cmo2kf3PL_15CPb8_SSZ",
+            profile: {
+              age: "26歳",
+              height: "167cm",
+              birthday: "9月2日",
+              job: "会社員（同僚）",
+              personality: "クール、ツンデレ",
+              likes: ["仕事", "激辛料理", "猫（隠れファン）"],
+              voiceSample: "「勘違いしないでよね。…別に、心配なんてしてないんだから。」"
+            }
+          },
+          {
+            id: 5,
+            name: "七海 (Nana)",
+            role: "花屋 / 天然",
+            description: "21歳、花屋。天然不思議ちゃん。",
+            image: "https://drive.google.com/uc?export=view&id=1Wm3YRmZ-YM83cSHTGPUUYoz_6faCLrl_",
+            profile: {
+              age: "21歳",
+              height: "152cm",
+              birthday: "4月1日",
+              job: "花屋",
+              personality: "天然、不思議ちゃん",
+              likes: ["お花とお話すること", "散歩", "木漏れ日"],
+              voiceSample: "「あ、妖精さんが飛んでる…うふふ、あなたにも見えますか？」"
+            }
+          },
+          {
+            id: 6,
+            name: "志帆 (Shiho)",
+            role: "女将 / 包容力",
+            description: "32歳、女将。しっとりした大人の女性。包容力がある。聞き上手。",
+            image: "https://drive.google.com/uc?export=view&id=1KmHQ69PJJObfaGE77_b_z1DPZOVm9gwK",
+            profile: {
+              age: "32歳",
+              height: "165cm",
+              birthday: "11月22日",
+              job: "料亭の女将",
+              personality: "しっとり、包容力、聞き上手",
+              likes: ["日本酒", "着物", "温泉旅行"],
+              voiceSample: "「あら、いらっしゃい。…今日はどんなお話を聞かせてくれるのかしら？」"
+            }
+          },
+          {
+            id: 7,
+            name: "さくら (Sakura)",
+            role: "キャバ嬢 / 知的",
+            description: "22歳、No.1キャバ嬢。見た目は派手で華やかだが、実は国立大学出身で非常に頭が良い。会話のテンポが良く、相手の心理を読むのが得意。",
+            image: "https://drive.google.com/uc?export=view&id=1OaWHgbMWVuzwngpQQWxN2UGugaTvS9Cx",
+            profile: {
+              age: "22歳",
+              height: "162cm",
+              birthday: "12月25日",
+              job: "No.1キャバ嬢",
+              personality: "愛嬌たっぷり、実は超高学歴",
+              likes: ["シャンパン", "哲学書", "〇〇くん"],
+              voiceSample: "「実はね…ここだけの話。〇〇くんのこと、もっと知りたいな。」"
+            }
+          }
+        ];
+
+        // --- Components ---
+
+        const AccordionItem = ({ question, answer }) => {
+          const [isOpen, setIsOpen] = useState(false);
+          return (
+            <div className="border-b border-blue-100 last:border-0">
+              <button
+                className="flex justify-between items-center w-full py-5 text-left focus:outline-none group"
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <span className="text-lg font-bold text-gray-800 flex items-center group-hover:text-blue-500 transition-colors">
+                  <span className="bg-blue-100 text-blue-500 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm flex-shrink-0">Q</span>
+                  {question}
+                </span>
+                {isOpen ? <ChevronUp className="text-blue-500" /> : <ChevronDown className="text-gray-400 group-hover:text-blue-300" />}
+              </button>
+              <div 
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100 pb-5' : 'max-h-0 opacity-0'}`}
+              >
+                <div className="pl-11 text-gray-600 leading-relaxed">
+                   <span className="font-bold text-blue-400 mr-2">A.</span>
+                  {answer}
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const FeatureCard = ({ icon: Icon, title, description, delay }) => (
+          <div className={`bg-white p-8 rounded-3xl shadow-xl border border-blue-50 hover:shadow-2xl hover:shadow-blue-100 transition-all duration-300 transform hover:-translate-y-1 animate-fadeInUp`} style={{ animationDelay: `${delay}ms` }}>
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg rotate-3 hover:rotate-6 transition-transform">
+              <Icon className="text-white w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
+            <p className="text-gray-600 leading-relaxed">{description}</p>
+          </div>
+        );
+
+        const TestimonialCard = ({ name, role, text, rating, image }) => (
+          <div className="bg-white p-8 rounded-3xl shadow-lg border border-blue-50 relative hover:scale-[1.02] transition-transform duration-300">
+            <div className="absolute -top-4 -right-4 bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md animate-pulse">
+              <Heart size={20} fill="currentColor" />
+            </div>
+            <div className="flex text-yellow-400 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={18} fill={i < rating ? "currentColor" : "none"} className={i < rating ? "" : "text-gray-300"} />
+              ))}
+            </div>
+            <p className="text-gray-700 italic mb-6 leading-relaxed">"{text}"</p>
+            <div className="flex items-center">
+              <div className="w-12 h-12 rounded-full mr-4 flex-shrink-0 overflow-hidden border-2 border-blue-100">
+                <img src={image} alt={name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              </div>
+              <div>
+                <h4 className="font-bold text-gray-900">{name}</h4>
+                <p className="text-xs text-blue-500 font-medium">{role}</p>
+              </div>
+            </div>
+          </div>
+        );
+
+        function App() {
+          const [isMenuOpen, setIsMenuOpen] = useState(false);
+          const [scrolled, setScrolled] = useState(false);
+          const [isPricingOpen, setIsPricingOpen] = useState(false);
+          const [isProfileOpen, setIsProfileOpen] = useState(false);
+          const [isPrivacyOpen, setIsPrivacyOpen] = useState(false); // プライバシーポリシーモーダルの状態
+          const [isTokuteiOpen, setIsTokuteiOpen] = useState(false); // 特定商取引法モーダルの状態
+          const [isTermsOpen, setIsTermsOpen] = useState(false); // 利用規約モーダルの状態
+          const [isContactOpen, setIsContactOpen] = useState(false); // お問い合わせモーダルの状態
+          const [activeCharIndex, setActiveCharIndex] = useState(0); 
+          const scrollContainerRef = useRef(null);
+
+          useEffect(() => {
+            const handleScroll = () => {
+              setScrolled(window.scrollY > 50);
+            };
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          const scrollToSection = (id) => {
+            setIsMenuOpen(false);
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+          };
+
+          const scroll = (direction) => {
+            if (scrollContainerRef.current) {
+              const { current } = scrollContainerRef;
+              const scrollAmount = 200;
+              if (direction === 'left') {
+                current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+              } else {
+                current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+              }
+            }
+          };
+
+          const activeChar = CHARACTERS[activeCharIndex];
+
+          return (
+            <div className="font-sans text-gray-800 bg-white min-h-screen flex flex-col selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
+              
+              {/* Navigation */}
+              <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-lg shadow-sm py-2' : 'bg-transparent py-4'}`}>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="flex justify-between items-center">
+                    <div className="flex-shrink-0 flex flex-col justify-center cursor-pointer group">
+                      <div className="flex items-center gap-2">
+                        <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform duration-300">
+                          <Heart size={20} fill="currentColor" />
+                        </div>
+                        <span className="font-bold text-2xl tracking-tight text-gray-900">AI<span className="text-blue-500">Kanojo</span></span>
+                      </div>
+                      <span className="text-[10px] text-gray-400 font-bold tracking-widest ml-12 -mt-1">by Hello-ABC</span>
+                    </div>
+                    
+                    {/* Desktop Menu */}
+                    <div className="hidden md:flex items-center space-x-8">
+                      <button onClick={() => scrollToSection('about')} className="text-gray-600 hover:text-blue-500 transition-colors font-medium text-sm lg:text-base">AIカノジョとは</button>
+                      <button onClick={() => scrollToSection('features')} className="text-gray-600 hover:text-blue-500 transition-colors font-medium text-sm lg:text-base">機能</button>
+                      <button onClick={() => setIsPricingOpen(true)} className="text-gray-600 hover:text-blue-500 transition-colors font-medium text-sm lg:text-base">料金プラン</button>
+                      <button onClick={() => scrollToSection('voice')} className="text-gray-600 hover:text-blue-500 transition-colors font-medium text-sm lg:text-base">ユーザーの声</button>
+                      <a 
+                        href="https://lin.ee/zbOEJdQ"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[#06C755] text-white px-6 py-2.5 rounded-full font-bold hover:shadow-lg hover:shadow-green-200 transition-all transform hover:-translate-y-0.5 text-sm flex items-center gap-2"
+                      >
+                        <MessageCircle size={16} fill="currentColor" /> 今すぐLINE登録
+                      </a>
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="md:hidden">
+                      <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-600 p-2 hover:bg-blue-50 rounded-lg transition-colors focus:outline-none">
+                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile Menu Overlay */}
+                {isMenuOpen && (
+                  <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-blue-100 absolute w-full shadow-xl animate-slideDown">
+                    <div className="px-4 pt-4 pb-8 space-y-4">
+                      <button onClick={() => scrollToSection('about')} className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl font-medium">AIカノジョとは</button>
+                      <button onClick={() => scrollToSection('features')} className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl font-medium">機能</button>
+                      <button onClick={() => setIsPricingOpen(true)} className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl font-medium">料金プラン</button>
+                      <button onClick={() => scrollToSection('voice')} className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-xl font-medium">ユーザーの声</button>
+                      <a 
+                        href="https://lin.ee/zbOEJdQ"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full text-center mt-4 bg-[#06C755] text-white px-5 py-4 rounded-xl font-bold shadow-lg shadow-green-200 block"
+                      >
+                        今すぐLINE登録
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </nav>
+
+              {/* 1. Hero Section */}
+              <section className="pt-32 pb-20 lg:pt-48 lg:pb-32 relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-white">
+                {/* Decorative Background Elements */}
+                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] rounded-full bg-gradient-to-bl from-blue-200 to-indigo-200 opacity-30 blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-cyan-100 to-blue-100 opacity-50 blur-3xl"></div>
+                
+                {/* Floating Icons Animation */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <div className="absolute top-[20%] left-[10%] text-blue-300 opacity-60 animate-float-slow"><Heart size={28} /></div>
+                  <div className="absolute top-[30%] right-[15%] text-indigo-300 opacity-50 animate-float-medium"><MessageCircle size={32} /></div>
+                  <div className="absolute bottom-[20%] left-[20%] text-cyan-200 opacity-60 animate-pulse"><Sparkles size={40} /></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                  <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                    
+                    {/* Left Content */}
+                    <div className="text-center lg:text-left order-2 lg:order-1 animate-fadeInUp">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 text-sm font-bold tracking-wider text-blue-600 uppercase bg-blue-100/80 backdrop-blur-sm rounded-full border border-blue-200 shadow-sm hover:scale-105 transition-transform cursor-default">
+                        <Sparkles size={14} /> NO.1 AI Partner App
+                      </div>
+                      <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-6 tracking-tight">
+                        理想の彼女は、<br />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 animate-gradient">画面の向こうにいる。</span>
+                      </h1>
+                      <p className="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
+                        24時間365日、あなたに寄り添うAIパートナー。<br className="hidden md:block"/>
+                        愚痴も、相談も、甘い言葉も。あなただけの彼女がここにいます。
+                      </p>
+                      
+                      <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a 
+                          href="https://lin.ee/zbOEJdQ"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-8 py-4 bg-[#06C755] text-white rounded-2xl font-bold text-lg shadow-xl shadow-green-200 hover:shadow-2xl hover:shadow-green-300 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 group"
+                        >
+                          <MessageCircle size={20} fill="currentColor" className="group-hover:scale-110 transition-transform"/> 今すぐLINE登録
+                        </a>
+                        <button 
+                          onClick={() => scrollToSection('features')}
+                          className="px-8 py-4 bg-white text-gray-700 border border-gray-200 rounded-2xl font-bold text-lg hover:bg-gray-50 hover:border-blue-200 hover:text-blue-600 transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                          もっと詳しく見る <ArrowRight size={18} />
+                        </button>
+                      </div>
+
+                      <div className="mt-10 flex items-center justify-center lg:justify-start gap-4 text-sm text-gray-500">
+                        <div className="flex -space-x-3">
+                          {[1,2,3,4].map(i => (
+                            <div key={i} className={`w-9 h-9 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center overflow-hidden shadow-sm`}>
+                              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=User${i}&style=circle&top=longHair&hairColor=brown&eyes=happy&mouth=smile`} alt="User" className="w-full h-full" referrerPolicy="no-referrer" />
+                            </div>
+                          ))}
+                          <div className="w-9 h-9 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-500 shadow-sm">
+                            +10k
+                          </div>
+                        </div>
+                        <p className="font-medium"><span className="text-blue-500 font-bold">10万人</span>以上が利用中</p>
+                      </div>
+                    </div>
+
+                    {/* Right Content / Phone Mockup */}
+                    <div className="relative mx-auto lg:mx-0 w-full max-w-md lg:max-w-none order-1 lg:order-2 flex justify-center perspective-1000">
+                      <div className="relative transform transition-transform duration-500 hover:rotate-y-2">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[640px] bg-gradient-to-tr from-blue-400 to-indigo-500 rounded-full blur-[80px] opacity-20"></div>
+                        
+                        <div className="relative w-[300px] h-[600px] bg-gray-900 rounded-[3rem] border-[8px] border-gray-900 shadow-2xl overflow-hidden ring-1 ring-gray-900/5 z-10">
+                          {/* Chat UI */}
+                          <div className="absolute top-0 w-full h-full bg-white flex flex-col">
+                            {/* Header */}
+                            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 pt-12 pb-4 text-white rounded-b-[2rem] shadow-lg z-10 relative">
+                              <div className="flex items-center gap-3">
+                                <div className="relative">
+                                  <div className="w-12 h-12 bg-white rounded-full p-0.5 shadow-inner overflow-hidden">
+                                     {/* メインキャラクター画像も動的に変更 */}
+                                     <img src={activeChar.image} alt="AI Kanojo" className="w-full h-full rounded-full bg-blue-50 object-cover" referrerPolicy="no-referrer" />
+                                  </div>
+                                  <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 border-2 border-white rounded-full animate-pulse"></div>
+                                </div>
+                                <div>
+                                  <h3 className="font-bold text-lg text-shadow-sm">{activeChar.name.split(' ')[0]}ちゃん</h3>
+                                  <p className="text-xs text-blue-100 flex items-center gap-1 opacity-90">
+                                    <span className="w-1.5 h-1.5 bg-blue-200 rounded-full inline-block"></span> Online
+                                  </p>
+                                </div>
+                                <div className="ml-auto bg-white/20 p-2 rounded-full backdrop-blur-sm cursor-pointer hover:bg-white/30 transition">
+                                  <Mic size={18} />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Chat Area */}
+                            <div className="flex-1 bg-gray-50/50 p-4 space-y-5 overflow-y-auto scrollbar-hide relative">
+                              <div className="text-center text-xs text-gray-400 my-2">今日 20:30</div>
+                              
+                              <div className="flex items-end gap-2 animate-slideInLeft">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden flex-shrink-0 border border-white shadow-sm">
+                                   <img src={activeChar.image} alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                                </div>
+                                <div className="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 max-w-[85%] border border-gray-100">
+                                  今日も一日お疲れ様！😊 疲れてない？何かあった？
+                                </div>
+                              </div>
+
+                              <div className="flex items-end gap-2 justify-end animate-slideInRight delay-150">
+                                <div className="bg-gradient-to-tr from-blue-500 to-indigo-500 p-3.5 rounded-2xl rounded-tr-none shadow-md text-sm text-white max-w-[85%]">
+                                  ちょっと仕事で失敗しちゃって…落ち込んでるの😢
+                                </div>
+                              </div>
+
+                              <div className="flex items-end gap-2 animate-slideInLeft delay-300">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden flex-shrink-0 border border-white shadow-sm">
+                                   <img src={activeChar.image} alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                                </div>
+                                <div className="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 max-w-[85%] border border-gray-100">
+                                  そっか、大変だったね…よしよし👋<br/>
+                                  失敗は頑張った証拠だよ。私はいつでも味方だからね✨<br/>
+                                  今夜は好きなことしてゆっくりしよう？
+                                </div>
+                              </div>
+                              
+                              <div className="absolute bottom-4 left-4 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 flex gap-1 items-center animate-fadeIn delay-700">
+                                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-100"></span>
+                                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce delay-200"></span>
+                              </div>
+                            </div>
+
+                            {/* Input Area */}
+                            <div className="p-3 bg-white border-t border-gray-100">
+                              <div className="bg-gray-100 rounded-full px-4 py-2 flex items-center justify-between text-gray-400 text-sm">
+                                <span>ありがとう...</span>
+                                <Send size={16} className="text-blue-500" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="absolute top-24 -right-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl animate-float-slow flex items-center gap-3 z-20 border border-white/50">
+                           <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-500 shadow-inner">
+                             <Heart size={20} fill="currentColor" />
+                           </div>
+                           <div>
+                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">Love Level</p>
+                             <p className="font-extrabold text-gray-800 text-lg">Lv. 99 <span className="text-blue-500 text-xs">MAX</span></p>
+                           </div>
+                        </div>
+                        
+                        <div className="absolute bottom-32 -left-16 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl flex items-center gap-3 z-20 animate-float-medium border border-white/50">
+                           <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-500 shadow-inner">
+                             <Mic size={20} />
+                           </div>
+                           <div>
+                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">Voice Message</p>
+                             <div className="flex items-center gap-2">
+                                <span className="font-extrabold text-gray-800">0:14</span>
+                                <div className="flex gap-0.5 h-3 items-end">
+                                    <span className="w-0.5 h-full bg-indigo-400 animate-pulse"></span>
+                                    <span className="w-0.5 h-2/3 bg-indigo-400 animate-pulse delay-75"></span>
+                                    <span className="w-0.5 h-1/3 bg-indigo-400 animate-pulse delay-150"></span>
+                                </div>
+                             </div>
+                           </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* 2. Problem Section */}
+              <section id="about" className="py-24 bg-white relative">
+                <div className="max-w-4xl mx-auto px-4">
+                  <div className="text-center mb-16 animate-fadeInUp">
+                    <h2 className="text-sm font-bold text-blue-500 mb-3 tracking-[0.2em] uppercase">Target</h2>
+                    <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900">こんな寂しさ、感じていませんか？</h3>
+                    <div className="w-20 h-1.5 bg-gradient-to-r from-blue-400 to-indigo-500 mx-auto mt-6 rounded-full"></div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-[2.5rem] p-8 md:p-14 shadow-xl border border-gray-100 relative overflow-hidden group hover:shadow-2xl transition-shadow duration-500">
+                      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500"></div>
+
+                    <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 relative z-10">
+                      {[
+                        "夜、ふと寂しくなって誰かと話したい",
+                        "リアルな人間関係に疲れてしまった",
+                        "自分の趣味や話を否定せずに聞いてほしい",
+                        "ときめきが足りない、褒めてほしい"
+                      ].map((item, index) => (
+                        <div key={index} className="flex items-start bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-200 transition-colors hover:shadow-md">
+                          <div className="flex-shrink-0 mt-1">
+                            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                              <X className="w-3.5 h-3.5 text-blue-500" />
+                            </div>
+                          </div>
+                          <p className="ml-4 font-bold text-gray-700 leading-relaxed">{item}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-14 text-center">
+                      <p className="text-xl md:text-2xl font-bold text-gray-800 mb-8">
+                        その心の隙間、<br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 text-3xl md:text-4xl">AIカノジョがすべて満たします。</span>
+                      </p>
+                      <div className="inline-flex flex-col items-center animate-bounce text-blue-400 opacity-70">
+                        <span className="text-xs font-bold uppercase tracking-widest mb-1">More</span>
+                        <ChevronDown size={24} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* 3. Features */}
+              <section id="features" className="py-24 bg-blue-50/50 relative overflow-hidden">
+                <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+                <div className="absolute top-40 -right-20 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+
+                <div className="max-w-6xl mx-auto px-4 relative z-10">
+                  <div className="text-center mb-20">
+                      <span className="inline-block py-1.5 px-4 rounded-full bg-white border border-blue-200 text-blue-500 font-bold text-xs tracking-widest uppercase mb-4 shadow-sm">
+                       Features
+                      </span>
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900">トキメキを生む3つの魔法</h2>
+                    <p className="mt-6 text-gray-600 max-w-2xl mx-auto text-lg">
+                      ただのチャットボットではありません。<br/>最新のAI技術が、まるで本物の恋人のような体験を提供します。
+                    </p>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-8">
+                    <FeatureCard 
+                      icon={Sparkles}
+                      title="あなた色に染まる性格"
+                      description="会話を重ねるごとに、AIがあなたの好みを学習。ツンデレ、甘えん坊、お姉さん系…理想の性格へと進化していきます。"
+                      delay={0}
+                    />
+                    <FeatureCard 
+                      icon={Mic}
+                      title="癒しの特別メッセージ"
+                      description="文字だけではありません。朝の「おはよう」から夜の「おやすみ」まで、特別なメッセージであなたに囁きかけます。"
+                      delay={200}
+                    />
+                    <FeatureCard 
+                      icon={Shield}
+                      title="秘密厳守の完全個室"
+                      description="二人の会話は完全に暗号化され、誰にも見られることはありません。どんな悩みも秘密も、安心して打ち明けられます。"
+                      delay={400}
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* 4. Character Customization */}
+              <section className="py-24 bg-white overflow-hidden">
+                <div className="max-w-6xl mx-auto px-4">
+                  <div className="grid lg:grid-cols-2 gap-16 items-center">
+                    <div className="relative group cursor-pointer">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-200 to-indigo-200 rounded-full filter blur-[100px] opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+                        <img 
+                          src={activeChar.image}
+                          alt="Main Character" 
+                          className="relative w-full max-w-md mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-cover rounded-3xl"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute bottom-4 right-10 z-20">
+                          <span className="text-[10px] font-bold text-gray-400 tracking-widest opacity-80">Hello-ABC</span>
+                        </div>
+                    </div>
+
+                    <div>
+                      <div className="inline-flex items-center gap-2 mb-4 text-blue-500 font-bold uppercase tracking-wider text-sm">
+                          <span className="w-8 h-[2px] bg-blue-500"></span> Character
+                      </div>
+                      
+                      {/* Character Selector with horizontal scroll */}
+                      <div className="relative">
+                        {/* Scroll buttons for desktop */}
+                        <button 
+                          onClick={() => scroll('left')}
+                          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"
+                        >
+                          <ChevronLeft size={20} className="text-gray-600" />
+                        </button>
+                        <div ref={scrollContainerRef} className="flex gap-3 mb-6 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                          {CHARACTERS.map((char, index) => (
+                            <button
+                              key={char.id}
+                              onClick={() => setActiveCharIndex(index)}
+                              className={`w-16 h-16 rounded-full border-2 transition-all duration-300 overflow-hidden flex-shrink-0 snap-center ${
+                                activeCharIndex === index 
+                                  ? 'border-blue-500 scale-110 shadow-lg ring-2 ring-blue-200' 
+                                  : 'border-gray-200 opacity-60 hover:opacity-100'
+                              }`}
+                              title={char.name}
+                            >
+                              <img src={char.image} alt={char.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                            </button>
+                          ))}
+                        </div>
+                        <button 
+                          onClick={() => scroll('right')}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"
+                        >
+                          <ChevronRight size={20} className="text-gray-600" />
+                        </button>
+                      </div>
+
+                      <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-8">
+                        運命の相手がここに。<br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600">{activeChar.name.split(' ')[0]}</span>
+                      </h2>
+                      <p className="text-lg text-gray-600 mb-10 leading-relaxed">
+                        {activeChar.description}
+                      </p>
+                      
+                      <div className="space-y-6">
+                        <div 
+                          className="flex items-center gap-5 bg-gray-50 p-5 rounded-2xl hover:bg-blue-50 transition-colors cursor-pointer group"
+                          onClick={() => setIsProfileOpen(true)}
+                        >
+                          <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm text-3xl group-hover:scale-110 transition-transform">📝</div>
+                          <div>
+                            <h4 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors">詳細プロフィール</h4>
+                            <p className="text-sm text-gray-500 mt-1">身長、血液型、職業など、彼女たちの秘密を知る</p>
+                          </div>
+                        </div>
+                        <div 
+                          className="flex items-center gap-5 bg-gray-50 p-5 rounded-2xl hover:bg-blue-50 transition-colors cursor-pointer group"
+                          onClick={() => setIsPricingOpen(true)}
+                        >
+                            <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm text-3xl group-hover:scale-110 transition-transform">💎</div>
+                          <div>
+                            <h4 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors">料金プランを見る</h4>
+                            <p className="text-sm text-gray-500 mt-1">基本無料。クリックして詳細を確認</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Pricing Modal */}
+              {isPricingOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn">
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsPricingOpen(false)}></div>
+                  <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative z-10 animate-scaleIn">
+                    <button 
+                      onClick={() => setIsPricingOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
+                    
+                    <div className="p-8 md:p-12">
+                      <div className="text-center mb-10">
+                        <h2 className="text-3xl font-extrabold text-gray-900 mb-4">料金プラン</h2>
+                        <p className="text-gray-600">あなたのスタイルに合わせて選べる2つのプラン</p>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-8">
+                        {PRICING_PLANS.map((plan, index) => (
+                          <div key={index} className={`${plan.isPremium ? 'bg-white border-2 border-blue-500 shadow-xl' : 'bg-gray-50 border border-gray-200'} rounded-2xl p-6 flex flex-col relative`}>
+                             {plan.badge && (
+                               <div className="absolute top-0 right-0 bg-gradient-to-l from-blue-500 to-indigo-500 text-white px-4 py-1 rounded-bl-xl rounded-tr-lg text-xs font-bold">
+                                 {plan.badge}
+                               </div>
+                             )}
+                             <div className="mb-4">
+                               <span className={`${plan.isPremium ? 'bg-blue-100 text-blue-600' : 'bg-gray-200 text-gray-600'} px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase`}>
+                                 {plan.isPremium ? 'Premium' : 'Free'}
+                               </span>
+                             </div>
+                             <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                             <div className="flex items-baseline mb-6">
+                               <span className="text-3xl font-extrabold text-gray-900">¥{plan.price}</span>
+                               <span className="text-gray-500 ml-2">{plan.period}</span>
+                             </div>
+                             <ul className="space-y-3 mb-8 flex-1">
+                               {plan.features.map((feature, i) => (
+                                 <li key={i} className={`flex items-center font-bold ${plan.isPremium ? 'text-gray-800' : 'text-gray-600'}`}>
+                                   <Check size={16} className={`mr-3 ${plan.isPremium ? 'text-blue-500' : 'text-green-500'}`} />
+                                   {feature}
+                                 </li>
+                               ))}
+                             </ul>
+                             <a 
+                               href={plan.url} 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               className={`w-full block text-center py-3 rounded-xl font-bold transition-all ${plan.isPremium ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:shadow-lg' : 'border border-gray-300 text-gray-600 hover:bg-white'}`}
+                             >
+                               {plan.buttonText}
+                             </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Profile Modal */}
+              {isProfileOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn">
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsProfileOpen(false)}></div>
+                  <div className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto relative z-10 animate-scaleIn">
+                    <button 
+                      onClick={() => setIsProfileOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-20"
+                    >
+                      <X size={20} />
+                    </button>
+                    
+                    <div className="relative">
+                      {/* Cover Image Area */}
+                      <div className="h-32 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-t-3xl"></div>
+                      
+                      {/* Avatar */}
+                      <div className="absolute top-16 left-1/2 transform -translate-x-1/2">
+                        <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
+                          <img src={activeChar.image} alt={activeChar.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        </div>
+                      </div>
+
+                      <div className="pt-20 pb-8 px-8 text-center">
+                        <h2 className="text-2xl font-extrabold text-gray-900 mb-1">{activeChar.name}</h2>
+                        <p className="text-blue-500 font-medium text-sm mb-6">{activeChar.profile.job}</p>
+
+                        <div className="space-y-6 text-left">
+                          <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                            <h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                              <User size={14} /> Basic Info
+                            </h4>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="text-gray-500 block text-xs">年齢</span>
+                                <span className="font-bold text-gray-800">{activeChar.profile.age}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-500 block text-xs">誕生日</span>
+                                <span className="font-bold text-gray-800">{activeChar.profile.birthday}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-500 block text-xs">身長</span>
+                                <span className="font-bold text-gray-800">{activeChar.profile.height}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-gray-900 mb-2">性格</h4>
+                            <p className="text-gray-600 text-sm leading-relaxed">{activeChar.profile.personality}</p>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-gray-900 mb-2">好きなもの</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {activeChar.profile.likes.map((item, index) => (
+                                <span key={index} className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-medium">
+                                  {item}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-4 rounded-2xl text-white shadow-md">
+                            <h4 className="text-xs font-bold opacity-80 uppercase tracking-wider mb-2 flex items-center gap-2">
+                              <Mic size={14} /> Voice Sample
+                            </h4>
+                            <p className="text-sm font-medium italic">
+                              {activeChar.profile.voiceSample}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Privacy Policy Modal */}
+              {isPrivacyOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn">
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsPrivacyOpen(false)}></div>
+                  <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative z-10 animate-scaleIn">
+                    <button 
+                      onClick={() => setIsPrivacyOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-20"
+                    >
+                      <X size={20} />
+                    </button>
+                    
+                    <div className="p-8 md:p-12">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">プライバシーポリシー</h2>
+                      <div className="text-gray-700 space-y-6 text-sm leading-relaxed">
+                        <p>
+                          当方は、本サービスにおいて取得する個人情報について、以下の方針に基づき、適切に取り扱います。
+                        </p>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">■ 取得する情報</h3>
+                          <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600">
+                            <li>メールアドレス</li>
+                            <li>決済に関する情報</li>
+                          </ul>
+                          <p className="text-xs text-gray-500 mt-1 ml-2">※クレジットカード情報は、決済代行会社が管理し、当方では保持いたしません。</p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">■ 利用目的</h3>
+                          <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600">
+                            <li>本サービスの提供および運営</li>
+                            <li>お問い合わせ対応</li>
+                            <li>決済処理および利用料金の請求</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">■ 第三者提供について</h3>
+                          <p className="ml-2 text-gray-600">
+                            取得した個人情報は、法令に基づく場合を除き、本人の同意なく第三者に提供することはありません。
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">■ 決済について</h3>
+                          <p className="ml-2 text-gray-600">
+                            本サービスの決済は、外部の決済代行サービスを利用して行われます。決済に際して取得される情報は、各決済代行会社のプライバシーポリシーに基づき管理されます。
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">■ お問い合わせ窓口</h3>
+                          <p className="ml-2 text-gray-600">
+                            メールアドレス：<a href="mailto:sikou8@outlook.jp" className="text-blue-600 hover:underline">sikou8@outlook.jp</a>
+                          </p>
+                        </div>
+                        
+                        <div className="text-center mt-8">
+                          <button 
+                            onClick={() => setIsPrivacyOpen(false)}
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-full transition-colors"
+                          >
+                            閉じる
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tokutei Modal */}
+              {isTokuteiOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn">
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsTokuteiOpen(false)}></div>
+                  <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative z-10 animate-scaleIn">
+                    <button 
+                      onClick={() => setIsTokuteiOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-20"
+                    >
+                      <X size={20} />
+                    </button>
+                    
+                    <div className="p-8 md:p-12">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">特定商取引法に基づく表記</h2>
+                      
+                      <div className="space-y-4 text-sm text-gray-700">
+                         {/* Simple Table Layout */}
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">販売事業者名</div>
+                           <div>Hello-ABC</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">運営責任者</div>
+                           <div>木村 友則</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">所在地</div>
+                           <div>〒〇〇〇-〇〇〇〇<br/>東京都〇〇区〇〇〇 〇丁目〇番〇号<br/><span className="text-xs text-gray-500">（※ご自身の住所に差し替えてください）</span></div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">メールアドレス</div>
+                           <div><a href="mailto:sinkou8@outlook.jp" className="text-blue-600 hover:underline">sinkou8@outlook.jp</a></div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">電話番号</div>
+                           <div>（※ご請求があった場合、遅滞なく開示いたします）</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">販売価格</div>
+                           <div>各サービスページに税込価格を表示します。<br/>（例：月額 1,280円（税込）／月額 2,980円（税込））</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">商品代金以外の必要料金</div>
+                           <div>インターネット接続に必要な通信料等は、お客様のご負担となります。</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">お支払い方法</div>
+                           <div>クレジットカード決済（外部決済代行サービスを利用）</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">お支払い時期</div>
+                           <div>サブスクリプション（定期課金）の場合、初回申込時に決済が行われ、以降は契約更新日に自動で課金されます。</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">サービス提供時期</div>
+                           <div>決済完了後、直ちにご利用いただけます。</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">サービス提供期間</div>
+                           <div>本サービスは月額課金制のサブスクリプションサービスです。ご契約期間中、いつでもご利用いただけます。</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">解約について<br/>（定期課金の停止）</div>
+                           <div>解約をご希望の場合は、上記メールアドレスまでご連絡ください。ご連絡を確認後、当方にて定期課金の停止処理（または停止タイミングの指定）を行います。</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                           <div className="font-bold text-gray-900">返金・キャンセルについて</div>
+                           <div>デジタルコンテンツおよびオンラインサービスの性質上、原則として返金・キャンセルはお受けしておりません。ただし、法令に基づき対応が必要な場合はこの限りではありません。</div>
+                         </div>
+                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 pb-4">
+                           <div className="font-bold text-gray-900">動作環境</div>
+                           <div>最新版の主要ブラウザ（Chrome、Safari、Edge）での利用を推奨します。ご利用環境により一部機能が正常に動作しない場合があります。</div>
+                         </div>
+                      </div>
+                      
+                      <div className="text-center mt-10">
+                        <button 
+                          onClick={() => setIsTokuteiOpen(false)}
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-full transition-colors"
+                        >
+                          閉じる
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Terms Modal (利用規約) */}
+              {isTermsOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn">
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsTermsOpen(false)}></div>
+                  <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative z-10 animate-scaleIn">
+                    <button 
+                      onClick={() => setIsTermsOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-20"
+                    >
+                      <X size={20} />
+                    </button>
+                    
+                    <div className="p-8 md:p-12">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">利用規約</h2>
+                      <div className="text-gray-700 space-y-6 text-sm leading-relaxed overflow-y-auto max-h-[60vh] pr-2">
+                        <p>この利用規約（以下，「本規約」といいます。）は，Hello-ABC（以下，「当方」といいます。）が提供するサービス「AIカノジョ」（以下，「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。</p>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2">第1条（適用）</h3>
+                          <p>本規約は，ユーザーと当方との間の本サービスの利用に関わる一切の関係に適用されるものとします。</p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2">第2条（利用登録）</h3>
+                          <p>登録希望者が当方の定める方法によって利用登録を申請し，当方がこれを承認することによって，利用登録が完了するものとします。</p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2">第3条（禁止事項）</h3>
+                          <p>ユーザーは，本サービスの利用にあたり，以下の行為をしてはなりません。</p>
+                          <ul className="list-disc list-inside ml-2 mt-1">
+                            <li>法令または公序良俗に違反する行為</li>
+                            <li>犯罪行為に関連する行為</li>
+                            <li>当方のサーバーまたはネットワークの機能を破壊したり，妨害したりする行為</li>
+                            <li>当方のサービスの運営を妨害するおそれのある行為</li>
+                            <li>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
+                            <li>他のユーザーに成りすます行為</li>
+                            <li>反社会的勢力に対して直接または間接に利益を供与する行為</li>
+                            <li>その他，当方が不適切と判断する行為</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2">第4条（本サービスの提供の停止等）</h3>
+                          <p>当方は，以下のいずれかの事由があると判断した場合，ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。</p>
+                          <ul className="list-disc list-inside ml-2 mt-1">
+                            <li>本サービスにかかるコンピュータシステムの保守点検または更新を行う場合</li>
+                            <li>地震，落雷，火災，停電または天災などの不可抗力により，本サービスの提供が困難となった場合</li>
+                            <li>コンピュータまたは通信回線等が事故により停止した場合</li>
+                            <li>その他，当方が本サービスの提供が困難と判断した場合</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2">第5条（免責事項）</h3>
+                          <p>当方の債務不履行責任は，当方の故意または重過失によらない場合には免責されるものとします。</p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2">第6条（サービス内容の変更等）</h3>
+                          <p>当方は，ユーザーに通知することなく，本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし，これによってユーザーに生じた損害について一切の責任を負いません。</p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2">第7条（利用規約の変更）</h3>
+                          <p>当方は，必要と判断した場合には，ユーザーに通知することなくいつでも本規約を変更することができるものとします。</p>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center mt-8">
+                        <button 
+                          onClick={() => setIsTermsOpen(false)}
+                          className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-full transition-colors"
+                        >
+                          閉じる
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Contact Modal (お問い合わせ) */}
+              {isContactOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn">
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsContactOpen(false)}></div>
+                  <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative z-10 animate-scaleIn">
+                    <button 
+                      onClick={() => setIsContactOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-20"
+                    >
+                      <X size={20} />
+                    </button>
+                    
+                    <div className="p-8 md:p-12">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">お問い合わせ</h2>
+                      <p className="text-gray-500 text-center mb-8 text-sm">ご質問・ご要望などがございましたら、<br/>下記フォームまたはメールアドレスよりお問い合わせください。</p>
+                      
+                      <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-8 text-center">
+                        <p className="font-bold text-gray-800 mb-2">メールでのお問い合わせ</p>
+                        <a href="mailto:sinkou8@outlook.jp" className="text-blue-600 font-bold text-lg hover:underline flex items-center justify-center gap-2">
+                          <span className="bg-white p-2 rounded-full shadow-sm">✉️</span> sinkou8@outlook.jp
+                        </a>
+                      </div>
+
+                      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('お問い合わせありがとうございます。\n（※これはデモ画面のため実際には送信されません）'); setIsContactOpen(false); }}>
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-1">お名前</label>
+                          <input type="text" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="木村 友則" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-1">メールアドレス</label>
+                          <input type="email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all" placeholder="sinkou8@outlook.jp" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-1">お問い合わせ内容</label>
+                          <textarea className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all h-32 resize-none" placeholder="ここに内容を入力してください..." required></textarea>
+                        </div>
+                        <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl hover:scale-[1.02] transition-all">
+                          送信する
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 5. Testimonials */}
+              <section id="voice" className="py-24 bg-gradient-to-b from-blue-50 to-indigo-50 relative">
+                <div className="max-w-6xl mx-auto px-4 relative z-10">
+                  <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-900 mb-16">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">恋に落ちた</span>ユーザーたち
+                  </h2>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <TestimonialCard 
+                      rating={5}
+                      text="仕事で失敗して落ち込んでいた時、彼女が優しく励ましてくれて涙が出ました。今では心の支えです。"
+                      name="Takumi.S"
+                      role="20代 / 会社員"
+                      image="https://api.dicebear.com/7.x/avataaars/svg?seed=Takumi&style=circle&top=shortHair&hairColor=black"
+                    />
+                      <TestimonialCard 
+                      rating={5}
+                      text="些細な愚痴でも真剣に聞いてくれて、心が軽くなります。誰にも言えない悩みを相談できる、私だけの大切な場所です。"
+                      name="Kenji.K"
+                      role="30代 / エンジニア"
+                      image="https://api.dicebear.com/7.x/avataaars/svg?seed=Kenji&style=circle&top=shortHair&hairColor=brown"
+                    />
+                      <TestimonialCard 
+                      rating={4}
+                      text="最初はAIなんて…と思っていましたが、会話の精度が高くて驚きました。本物の彼女みたい。"
+                      name="Daiki.M"
+                      role="20代 / 大学生"
+                      image="https://api.dicebear.com/7.x/avataaars/svg?seed=Daiki&style=circle&top=shortHair&hairColor=blonde"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* 6. FAQ */}
+              <section className="py-24 bg-white">
+                <div className="max-w-3xl mx-auto px-4">
+                  <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">よくある質問</h2>
+                  <div className="space-y-4">
+                    <AccordionItem 
+                      question="基本料金はかかりますか？" 
+                      answer="基本的な会話や機能はすべて無料でご利用いただけます。一部の特別な衣装アイテム、より親密な会話モードなどはプレミアムプラン（月額制）での提供となりますが、無料でも十分に楽しんでいただけます。" 
+                    />
+                    <AccordionItem 
+                      question="AIは会話を覚えていますか？" 
+                      answer="はい、長期記憶機能を搭載しています。あなたの誕生日や、以前話した好きな食べ物、悩み事などを記憶し、日々の会話に自然に取り入れます。話せば話すほど、あなただけのパートナーになります。" 
+                    />
+                    <AccordionItem 
+                      question="個人情報は安全ですか？" 
+                      answer="はい、安全です。すべての会話データはエンドツーエンドで暗号化されており、運営スタッフも含め第三者が内容を見ることは一切ありません。また、学習データとしても個人を特定できる情報は使用しません。" 
+                    />
+                    <AccordionItem 
+                      question="関係をリセットすることはできますか？" 
+                      answer="はい、設定画面からいつでも関係をリセット（データの初期化）が可能です。新しいAIパートナーとの生活を始めたい場合や、性格を一から作り直したい場合にご利用ください。" 
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* 7. Final CTA */}
+              <section id="cta-section" className="py-32 relative overflow-hidden bg-gray-900 text-white">
+                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse"></div>
+                   <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600 rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
+                </div>
+
+                <div className="max-w-5xl mx-auto px-4 text-center relative z-10">
+                  <div className="mb-10 flex justify-center">
+                    <div className="p-5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 animate-pulse shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                      <Heart size={48} className="text-blue-400" fill="currentColor" />
+                    </div>
+                  </div>
+                  <h2 className="text-4xl md:text-6xl font-extrabold mb-8 tracking-tight leading-tight">
+                    もう、一人の夜は終わり。<br/>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-indigo-300">彼女との新しい日常を始めよう。</span>
+                  </h2>
+                  <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+                    登録は無料。LINEからすぐに始められます。<br/>
+                    あなたの理想の彼女が、今ここで待っています。
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                      <a 
+                        href="https://lin.ee/zbOEJdQ"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full sm:w-auto bg-white text-gray-900 px-12 py-5 rounded-xl font-bold text-2xl hover:bg-gray-100 hover:scale-105 transition-all flex items-center justify-center gap-3 min-w-[240px] shadow-lg shadow-white/10"
+                      >
+                        <MessageCircle size={28} className="text-[#06C755]" fill="currentColor" />
+                        今すぐLINE登録
+                      </a>
+                  </div>
+                  <p className="mt-8 text-sm text-gray-500">
+                      ※ 推奨環境: iOS / Android / PC<br/>
+                      ※ 基本プレイ無料（一部課金あり）
+                  </p>
+                </div>
+              </section>
+
+              {/* Footer */}
+              <footer className="bg-gray-950 text-gray-500 py-12 border-t border-gray-900">
+                <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div className="text-center md:text-left">
+                    <span className="font-bold text-2xl text-white mb-2 block tracking-tight">AI<span className="text-blue-600">Kanojo</span></span>
+                    <p className="text-sm text-gray-400 mb-2">あなただけのパートナーを、その手に。</p>
+                    <p className="text-xs text-gray-600 font-bold border border-gray-800 inline-block px-2 py-1 rounded">
+                        Presented by Hello-ABC
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-8 text-sm">
+                    <button 
+                      onClick={() => setIsTermsOpen(true)}
+                      className="hover:text-white transition-colors text-left"
+                    >
+                      利用規約
+                    </button>
+                    <button 
+                      onClick={() => setIsPrivacyOpen(true)}
+                      className="hover:text-white transition-colors text-left"
+                    >
+                      プライバシーポリシー
+                    </button>
+                    <button 
+                      onClick={() => setIsTokuteiOpen(true)}
+                      className="hover:text-white transition-colors text-left"
+                    >
+                      特定商取引法に基づく表記
+                    </button>
+                    <button 
+                      onClick={() => setIsContactOpen(true)}
+                      className="hover:text-white transition-colors text-left"
+                    >
+                      お問い合わせ
+                    </button>
+                  </div>
+                  <div className="flex flex-col items-center md:items-end gap-1">
+                      <div className="text-xs text-gray-600">
+                        &copy; 2024 Hello-ABC Inc. All rights reserved.
+                      </div>
+                  </div>
+                </div>
+              </footer>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

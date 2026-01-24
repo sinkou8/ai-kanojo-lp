@@ -647,7 +647,7 @@
                         <SafeImage 
                           src={activeChar.image} 
                           alt="Main Character" 
-                          className="relative w-auto h-[400px] md:h-[500px] max-w-full drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-contain rounded-3xl"
+                          className="relative w-auto h-[400px] md:h-[500px] max-w-full drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-contain rounded-3xl -translate-x-6 md:translate-x-0"
                           referrerPolicy="no-referrer"
                         />
                         <div className="absolute bottom-4 right-10 z-20">
@@ -674,7 +674,7 @@
                         {/* スマホスクロール対応: px-1 で見切れ防止、touchスクロール有効化 */}
                         <div 
                           ref={scrollContainerRef} 
-                          className="flex gap-3 mb-6 overflow-x-auto pb-4 px-1 scrollbar-hide snap-x scroll-smooth"
+                          className="flex gap-4 mb-6 overflow-x-auto pb-4 px-4 pr-12 scrollbar-hide snap-x scroll-smooth touch-pan-x"
                           style={{ WebkitOverflowScrolling: 'touch' }}
                         >
                           {CHARACTERS.map((char, index) => (

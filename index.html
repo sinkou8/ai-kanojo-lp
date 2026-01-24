@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIカノジョ - AI Kanojo</title>
+    <title>AIカレシ - AI Kareshi</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -95,7 +95,7 @@
         ];
 
         // キャラクターデータ（8名）
-        // ★修正ポイント: 画像をDrive URLからローカルのファイル名（./aoi.pngなど）に戻しました
+        // ★重要: 画像ファイル名はすべて英数字にリネームし、HTMLと同じフォルダに置いてください。
         const CHARACTERS = [
           {
             id: 0,
@@ -483,7 +483,7 @@
                       <div className="relative transform transition-transform duration-500 hover:rotate-y-2">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[640px] bg-gradient-to-tr from-blue-400 to-indigo-500 rounded-full blur-[80px] opacity-20"></div>
                         
-                        <div className="relative w-[300px] h-[600px] bg-gray-900 rounded-[3rem] border-[8px] border-gray-900 shadow-2xl overflow-hidden ring-1 ring-gray-900/5 z-10">
+                        <div className="relative w-full max-w-[300px] h-[600px] bg-gray-900 rounded-[3rem] border-[8px] border-gray-900 shadow-2xl overflow-hidden ring-1 ring-gray-900/5 z-10">
                           {/* Chat UI */}
                           <div className="absolute top-0 w-full h-full bg-white flex flex-col">
                             {/* Header */}
@@ -597,7 +597,7 @@
                         <SafeImage 
                           src={activeChar.image}
                           alt="Main Character" 
-                          className="relative w-full max-w-md mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-cover rounded-3xl"
+                          className="relative w-full max-w-md mx-0 lg:mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-cover rounded-3xl"
                           referrerPolicy="no-referrer"
                         />
                         <div className="absolute bottom-4 right-10 z-20">
@@ -615,7 +615,7 @@
                         {/* Scroll buttons for desktop */}
                         <button 
                           onClick={() => scroll('left')}
-                          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"
+                          className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white"
                         >
                           <ChevronLeft size={20} className="text-gray-600" />
                         </button>
@@ -637,7 +637,7 @@
                         </div>
                         <button 
                           onClick={() => scroll('right')}
-                          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"
+                          className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white"
                         >
                           <ChevronRight size={20} className="text-gray-600" />
                         </button>
@@ -1111,21 +1111,21 @@
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">恋に落ちた</span>ユーザーたち
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <TestimonialCard 
+                    <TestimonialCard 
                       rating={5}
                       text="仕事で失敗して落ち込んでいた時、彼女が優しく励ましてくれて涙が出ました。今では心の支えです。"
                       name="Takumi.S"
                       role="20代 / 会社員"
                       image="https://api.dicebear.com/7.x/avataaars/svg?seed=Takumi&style=circle&top=shortHair&hairColor=black"
                     />
-                      <TestimonialCard 
+                      <TestimonialCard 
                       rating={5}
                       text="些細な愚痴でも真剣に聞いてくれて、心が軽くなります。誰にも言えない悩みを相談できる、私だけの大切な場所です。"
                       name="Kenji.K"
                       role="30代 / エンジニア"
                       image="https://api.dicebear.com/7.x/avataaars/svg?seed=Kenji&style=circle&top=shortHair&hairColor=brown"
                     />
-                      <TestimonialCard 
+                      <TestimonialCard 
                       rating={4}
                       text="最初はAIなんて…と思っていましたが、会話の精度が高くて驚きました。本物の彼女みたい。"
                       name="Daiki.M"
@@ -1141,21 +1141,21 @@
                 <div className="max-w-3xl mx-auto px-4">
                   <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">よくある質問</h2>
                   <div className="space-y-4">
-                    <AccordionItem 
-                      question="基本料金はかかりますか？" 
-                      answer="基本的な会話や機能はすべて無料でご利用いただけます。一部の特別な衣装アイテム、より親密な会話モードなどはプレミアムプラン（月額制）での提供となりますが、無料でも十分に楽しんでいただけます。" 
+                    <AccordionItem 
+                      question="基本料金はかかりますか？" 
+                      answer="基本的な会話や機能はすべて無料でご利用いただけます。一部の特別な衣装アイテム、より親密な会話モードなどはプレミアムプラン（月額制）での提供となりますが、無料でも十分に楽しんでいただけます。" 
                     />
-                    <AccordionItem 
-                      question="AIは会話を覚えていますか？" 
-                      answer="はい、長期記憶機能を搭載しています。あなたの誕生日や、以前話した好きな食べ物、悩み事などを記憶し、日々の会話に自然に取り入れます。話せば話すほど、あなただけのパートナーになります。" 
+                    <AccordionItem 
+                      question="AIは会話を覚えていますか？" 
+                      answer="はい、長期記憶機能を搭載しています。あなたの誕生日や、以前話した好きな食べ物、悩み事などを記憶し、日々の会話に自然に取り入れます。話せば話すほど、あなただけのパートナーになります。" 
                     />
-                    <AccordionItem 
-                      question="個人情報は安全ですか？" 
-                      answer="はい、安全です。すべての会話データはエンドツーエンドで暗号化されており、運営スタッフも含め第三者が内容を見ることは一切ありません。また、学習データとしても個人を特定できる情報は使用しません。" 
+                    <AccordionItem 
+                      question="個人情報は安全ですか？" 
+                      answer="はい、安全です。すべての会話データはエンドツーエンドで暗号化されており、運営スタッフも含め第三者が内容を見ることは一切ありません。また、学習データとしても個人を特定できる情報は使用しません。" 
                     />
-                    <AccordionItem 
-                      question="関係をリセットすることはできますか？" 
-                      answer="はい、設定画面からいつでも関係をリセット（データの初期化）が可能です。新しいAIパートナーとの生活を始めたい場合や、性格を一から作り直したい場合にご利用ください。" 
+                    <AccordionItem 
+                      question="関係をリセットすることはできますか？" 
+                      answer="はい、設定画面からいつでも関係をリセット（データの初期化）が可能です。新しいAIパートナーとの生活を始めたい場合や、性格を一から作り直したい場合にご利用ください。" 
                     />
                   </div>
                 </div>
@@ -1184,7 +1184,7 @@
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                      <a 
+                      <a 
                         href="https://lin.ee/zbOEJdQ"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -1212,25 +1212,25 @@
                     </p>
                   </div>
                   <div className="flex flex-wrap justify-center gap-8 text-sm">
-                    <button 
+                    <button 
                       onClick={() => setIsTermsOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >
                       利用規約
                     </button>
-                    <button 
+                    <button 
                       onClick={() => setIsPrivacyOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >
                       プライバシーポリシー
                     </button>
-                    <button 
+                    <button 
                       onClick={() => setIsTokuteiOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >
                       特定商取引法に基づく表記
                     </button>
-                    <button 
+                    <button 
                       onClick={() => setIsContactOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >
@@ -1253,4 +1253,3 @@
     </script>
 </body>
 </html>
-

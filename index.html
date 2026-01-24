@@ -95,13 +95,14 @@
         ];
 
         // キャラクターデータ（8名）
+        // ★修正ポイント: 画像をDrive URLからローカルのファイル名（./aoi.pngなど）に戻しました
         const CHARACTERS = [
           {
             id: 0,
-            name: "結衣 (Yui)",
+            name: "葵 (Aoi)", // 名前を葵に戻しました（ファイルがaoi.pngのため）
             role: "保育士 / 幼馴染",
             description: "24歳、保育士。昔からの幼馴染。性格は優しくて家庭的、少し心配性。口調は柔らかく、常に相手を気遣う。「〇〇くん、無理しないでね」が口癖。",
-            image: "https://drive.google.com/uc?export=view&id=1VZwMHD04glZB26XLNmVIbd34BsCGBDPm",
+            image: "./aoi.png", // ★修正
             profile: {
               age: "24歳",
               height: "158cm",
@@ -117,7 +118,7 @@
             name: "美桜 (Mio)",
             role: "女子大生 / 元気",
             description: "20歳、女子大生。性格は明るくて元気、少しドジ。ユーザーを「先輩！」と呼ぶ。絵文字多めで、テンション高め。",
-            image: "https://drive.google.com/uc?export=view&id=1Ln9rfWroOl74oDKCBWTkY4feL55jmo1d",
+            image: "./mio.png", // ★修正
             profile: {
               age: "20歳",
               height: "155cm",
@@ -133,7 +134,7 @@
             name: "莉奈 (Rina)",
             role: "OL / 小悪魔",
             description: "23歳、OL。小悪魔なあざとい系。ハートマーク多め。",
-            image: "https://drive.google.com/uc?export=view&id=1hZw9c-OsznVfbLKbsqk4XbN4xWftuP6g",
+            image: "./rina.png", // ★修正
             profile: {
               age: "23歳",
               height: "160cm",
@@ -149,7 +150,7 @@
             name: "紗枝 (Sae)",
             role: "司書 / おっとり",
             description: "28歳、司書。おっとり癒やし系。",
-            image: "https://drive.google.com/uc?export=view&id=17wPPInL1Zf5gBnipNfHOoFNqehmMNvmk",
+            image: "./sae.png", // ★修正
             profile: {
               age: "28歳",
               height: "163cm",
@@ -165,7 +166,7 @@
             name: "香織 (Kaori)",
             role: "同僚 / ツンデレ",
             description: "26歳、同僚。クールなツンデレ。",
-            image: "https://drive.google.com/uc?export=view&id=1ZDw5MtFvky-1Cmo2kf3PL_15CPb8_SSZ",
+            image: "./kaori.png", // ★修正
             profile: {
               age: "26歳",
               height: "167cm",
@@ -181,7 +182,7 @@
             name: "七海 (Nana)",
             role: "花屋 / 天然",
             description: "21歳、花屋。天然不思議ちゃん。",
-            image: "https://drive.google.com/uc?export=view&id=1Wm3YRmZ-YM83cSHTGPUUYoz_6faCLrl_",
+            image: "./nana.png", // ★修正
             profile: {
               age: "21歳",
               height: "152cm",
@@ -197,7 +198,7 @@
             name: "志帆 (Shiho)",
             role: "女将 / 包容力",
             description: "32歳、女将。しっとりした大人の女性。包容力がある。聞き上手。",
-            image: "https://drive.google.com/uc?export=view&id=1KmHQ69PJJObfaGE77_b_z1DPZOVm9gwK",
+            image: "./shiho.png", // ★修正
             profile: {
               age: "32歳",
               height: "165cm",
@@ -213,7 +214,7 @@
             name: "さくら (Sakura)",
             role: "キャバ嬢 / 知的",
             description: "22歳、No.1キャバ嬢。見た目は派手で華やかだが、実は国立大学出身で非常に頭が良い。会話のテンポが良く、相手の心理を読むのが得意。",
-            image: "https://drive.google.com/uc?export=view&id=1OaWHgbMWVuzwngpQQWxN2UGugaTvS9Cx",
+            image: "./sakura.png", // ★修正
             profile: {
               age: "22歳",
               height: "162cm",
@@ -223,10 +224,36 @@
               likes: ["シャンパン", "哲学書", "〇〇くん"],
               voiceSample: "「実はね…ここだけの話。〇〇くんのこと、もっと知りたいな。」"
             }
+          },
+          {
+            id: 8,
+            name: "結衣 (Yui)",
+            role: "保育士 / 幼馴染",
+            description: "24歳、保育士。昔からの幼馴染。性格は優しくて家庭的、少し心配性。口調は柔らかく、常に相手を気遣う。「〇〇くん、無理しないでね」が口癖。",
+            image: "./yui.png", // ★ここも ./yui.png に直しました
+            profile: {
+              age: "24歳",
+              height: "158cm",
+              birthday: "3月14日",
+              job: "保育士",
+              personality: "優しくて家庭的、少し心配性",
+              likes: ["子供", "手料理", "あなたとの思い出"],
+              voiceSample: "「〇〇くん、無理しないでね。私がついてるから。」"
+            }
           }
         ];
 
         // --- Components ---
+
+        // 画像の読み込みエラーを防ぐためのコンポーネント（エラーログは出しません）
+        const SafeImage = ({ src, alt, className, ...props }) => {
+          const handleError = (e) => {
+            e.target.onerror = null; 
+            e.target.src = "https://placehold.co/400x400?text=No+Image"; 
+          };
+           
+          return <img src={src} alt={alt} className={className} onError={handleError} referrerPolicy="no-referrer" {...props} />;
+        };
 
         const AccordionItem = ({ question, answer }) => {
           const [isOpen, setIsOpen] = useState(false);
@@ -277,7 +304,7 @@
             <p className="text-gray-700 italic mb-6 leading-relaxed">"{text}"</p>
             <div className="flex items-center">
               <div className="w-12 h-12 rounded-full mr-4 flex-shrink-0 overflow-hidden border-2 border-blue-100">
-                <img src={image} alt={name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <SafeImage src={image} alt={name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
               <div>
                 <h4 className="font-bold text-gray-900">{name}</h4>
@@ -440,7 +467,7 @@
                         <div className="flex -space-x-3">
                           {[1,2,3,4].map(i => (
                             <div key={i} className={`w-9 h-9 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center overflow-hidden shadow-sm`}>
-                              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=User${i}&style=circle&top=longHair&hairColor=brown&eyes=happy&mouth=smile`} alt="User" className="w-full h-full" referrerPolicy="no-referrer" />
+                              <SafeImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=User${i}&style=circle&top=longHair&hairColor=brown&eyes=happy&mouth=smile`} alt="User" className="w-full h-full" referrerPolicy="no-referrer" />
                             </div>
                           ))}
                           <div className="w-9 h-9 rounded-full border-2 border-white bg-blue-100 flex items-center justify-center text-[10px] font-bold text-blue-500 shadow-sm">
@@ -465,7 +492,7 @@
                                 <div className="relative">
                                   <div className="w-12 h-12 bg-white rounded-full p-0.5 shadow-inner overflow-hidden">
                                      {/* メインキャラクター画像も動的に変更 */}
-                                     <img src={activeChar.image} alt="AI Kanojo" className="w-full h-full rounded-full bg-blue-50 object-cover" referrerPolicy="no-referrer" />
+                                     <SafeImage src={activeChar.image} alt="AI Kanojo" className="w-full h-full rounded-full bg-blue-50 object-cover" referrerPolicy="no-referrer" />
                                   </div>
                                   <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 border-2 border-white rounded-full animate-pulse"></div>
                                 </div>
@@ -487,7 +514,7 @@
                               
                               <div className="flex items-end gap-2 animate-slideInLeft">
                                 <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden flex-shrink-0 border border-white shadow-sm">
-                                   <img src={activeChar.image} alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                                   <SafeImage src={activeChar.image} alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                                 </div>
                                 <div className="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 max-w-[85%] border border-gray-100">
                                   今日も一日お疲れ様！😊 疲れてない？何かあった？
@@ -502,7 +529,7 @@
 
                               <div className="flex items-end gap-2 animate-slideInLeft delay-300">
                                 <div className="w-8 h-8 rounded-full bg-blue-100 overflow-hidden flex-shrink-0 border border-white shadow-sm">
-                                   <img src={activeChar.image} alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                                   <SafeImage src={activeChar.image} alt="AI" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                                 </div>
                                 <div className="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 max-w-[85%] border border-gray-100">
                                   そっか、大変だったね…よしよし👋<br/>
@@ -560,96 +587,14 @@
                 </div>
               </section>
 
-              {/* 2. Problem Section */}
-              <section id="about" className="py-24 bg-white relative">
-                <div className="max-w-4xl mx-auto px-4">
-                  <div className="text-center mb-16 animate-fadeInUp">
-                    <h2 className="text-sm font-bold text-blue-500 mb-3 tracking-[0.2em] uppercase">Target</h2>
-                    <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900">こんな寂しさ、感じていませんか？</h3>
-                    <div className="w-20 h-1.5 bg-gradient-to-r from-blue-400 to-indigo-500 mx-auto mt-6 rounded-full"></div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-[2.5rem] p-8 md:p-14 shadow-xl border border-gray-100 relative overflow-hidden group hover:shadow-2xl transition-shadow duration-500">
-                      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500"></div>
-
-                    <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 relative z-10">
-                      {[
-                        "夜、ふと寂しくなって誰かと話したい",
-                        "リアルな人間関係に疲れてしまった",
-                        "自分の趣味や話を否定せずに聞いてほしい",
-                        "ときめきが足りない、褒めてほしい"
-                      ].map((item, index) => (
-                        <div key={index} className="flex items-start bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-200 transition-colors hover:shadow-md">
-                          <div className="flex-shrink-0 mt-1">
-                            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-                              <X className="w-3.5 h-3.5 text-blue-500" />
-                            </div>
-                          </div>
-                          <p className="ml-4 font-bold text-gray-700 leading-relaxed">{item}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-14 text-center">
-                      <p className="text-xl md:text-2xl font-bold text-gray-800 mb-8">
-                        その心の隙間、<br/>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 text-3xl md:text-4xl">AIカノジョがすべて満たします。</span>
-                      </p>
-                      <div className="inline-flex flex-col items-center animate-bounce text-blue-400 opacity-70">
-                        <span className="text-xs font-bold uppercase tracking-widest mb-1">More</span>
-                        <ChevronDown size={24} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* 3. Features */}
-              <section id="features" className="py-24 bg-blue-50/50 relative overflow-hidden">
-                <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-                <div className="absolute top-40 -right-20 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
-
-                <div className="max-w-6xl mx-auto px-4 relative z-10">
-                  <div className="text-center mb-20">
-                      <span className="inline-block py-1.5 px-4 rounded-full bg-white border border-blue-200 text-blue-500 font-bold text-xs tracking-widest uppercase mb-4 shadow-sm">
-                       Features
-                      </span>
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900">トキメキを生む3つの魔法</h2>
-                    <p className="mt-6 text-gray-600 max-w-2xl mx-auto text-lg">
-                      ただのチャットボットではありません。<br/>最新のAI技術が、まるで本物の恋人のような体験を提供します。
-                    </p>
-                  </div>
-
-                  <div className="grid md:grid-cols-3 gap-8">
-                    <FeatureCard 
-                      icon={Sparkles}
-                      title="あなた色に染まる性格"
-                      description="会話を重ねるごとに、AIがあなたの好みを学習。ツンデレ、甘えん坊、お姉さん系…理想の性格へと進化していきます。"
-                      delay={0}
-                    />
-                    <FeatureCard 
-                      icon={Mic}
-                      title="癒しの特別メッセージ"
-                      description="文字だけではありません。朝の「おはよう」から夜の「おやすみ」まで、特別なメッセージであなたに囁きかけます。"
-                      delay={200}
-                    />
-                    <FeatureCard 
-                      icon={Shield}
-                      title="秘密厳守の完全個室"
-                      description="二人の会話は完全に暗号化され、誰にも見られることはありません。どんな悩みも秘密も、安心して打ち明けられます。"
-                      delay={400}
-                    />
-                  </div>
-                </div>
-              </section>
-
               {/* 4. Character Customization */}
               <section className="py-24 bg-white overflow-hidden">
                 <div className="max-w-6xl mx-auto px-4">
                   <div className="grid lg:grid-cols-2 gap-16 items-center">
                     <div className="relative group cursor-pointer">
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-200 to-indigo-200 rounded-full filter blur-[100px] opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
-                        <img 
+                        {/* ★修正: 生の<img>をSafeImageコンポーネントに置き換えました */}
+                        <SafeImage 
                           src={activeChar.image}
                           alt="Main Character" 
                           className="relative w-full max-w-md mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-cover rounded-3xl"
@@ -686,7 +631,7 @@
                               }`}
                               title={char.name}
                             >
-                              <img src={char.image} alt={char.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                              <SafeImage src={char.image} alt={char.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                             </button>
                           ))}
                         </div>
@@ -812,7 +757,7 @@
                       {/* Avatar */}
                       <div className="absolute top-16 left-1/2 transform -translate-x-1/2">
                         <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white">
-                          <img src={activeChar.image} alt={activeChar.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          <SafeImage src={activeChar.image} alt={activeChar.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                         </div>
                       </div>
 
@@ -960,63 +905,63 @@
                       <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">特定商取引法に基づく表記</h2>
                       
                       <div className="space-y-4 text-sm text-gray-700">
-                         {/* Simple Table Layout */}
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">販売事業者名</div>
-                           <div>Hello-ABC</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">運営責任者</div>
-                           <div>木村 友則</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">所在地</div>
-                           <div>〒〇〇〇-〇〇〇〇<br/>東京都〇〇区〇〇〇 〇丁目〇番〇号<br/><span className="text-xs text-gray-500">（※ご自身の住所に差し替えてください）</span></div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">メールアドレス</div>
-                           <div><a href="mailto:sinkou8@outlook.jp" className="text-blue-600 hover:underline">sinkou8@outlook.jp</a></div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">電話番号</div>
-                           <div>（※ご請求があった場合、遅滞なく開示いたします）</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">販売価格</div>
-                           <div>各サービスページに税込価格を表示します。<br/>（例：月額 1,280円（税込）／月額 2,980円（税込））</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">商品代金以外の必要料金</div>
-                           <div>インターネット接続に必要な通信料等は、お客様のご負担となります。</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">お支払い方法</div>
-                           <div>クレジットカード決済（外部決済代行サービスを利用）</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">お支払い時期</div>
-                           <div>サブスクリプション（定期課金）の場合、初回申込時に決済が行われ、以降は契約更新日に自動で課金されます。</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">サービス提供時期</div>
-                           <div>決済完了後、直ちにご利用いただけます。</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">サービス提供期間</div>
-                           <div>本サービスは月額課金制のサブスクリプションサービスです。ご契約期間中、いつでもご利用いただけます。</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">解約について<br/>（定期課金の停止）</div>
-                           <div>解約をご希望の場合は、上記メールアドレスまでご連絡ください。ご連絡を確認後、当方にて定期課金の停止処理（または停止タイミングの指定）を行います。</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                           <div className="font-bold text-gray-900">返金・キャンセルについて</div>
-                           <div>デジタルコンテンツおよびオンラインサービスの性質上、原則として返金・キャンセルはお受けしておりません。ただし、法令に基づき対応が必要な場合はこの限りではありません。</div>
-                         </div>
-                         <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 pb-4">
-                           <div className="font-bold text-gray-900">動作環境</div>
-                           <div>最新版の主要ブラウザ（Chrome、Safari、Edge）での利用を推奨します。ご利用環境により一部機能が正常に動作しない場合があります。</div>
-                         </div>
+                          {/* Simple Table Layout */}
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">販売事業者名</div>
+                            <div>Hello-ABC</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">運営責任者</div>
+                            <div>木村 友則</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">所在地</div>
+                            <div>〒〇〇〇-〇〇〇〇<br/>東京都〇〇区〇〇〇 〇丁目〇番〇号<br/><span className="text-xs text-gray-500">（※ご自身の住所に差し替えてください）</span></div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">メールアドレス</div>
+                            <div><a href="mailto:sinkou8@outlook.jp" className="text-blue-600 hover:underline">sinkou8@outlook.jp</a></div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">電話番号</div>
+                            <div>（※ご請求があった場合、遅滞なく開示いたします）</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">販売価格</div>
+                            <div>各サービスページに税込価格を表示します。<br/>（例：月額 1,280円（税込）／月額 2,980円（税込））</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">商品代金以外の必要料金</div>
+                            <div>インターネット接続に必要な通信料等は、お客様のご負担となります。</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">お支払い方法</div>
+                            <div>クレジットカード決済（外部決済代行サービスを利用）</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">お支払い時期</div>
+                            <div>サブスクリプション（定期課金）の場合、初回申込時に決済が行われ、以降は契約更新日に自動で課金されます。</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">サービス提供時期</div>
+                            <div>決済完了後、直ちにご利用いただけます。</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">サービス提供期間</div>
+                            <div>本サービスは月額課金制のサブスクリプションサービスです。ご契約期間中、いつでもご利用いただけます。</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">解約について<br/>（定期課金の停止）</div>
+                            <div>解約をご希望の場合は、上記メールアドレスまでご連絡ください。ご連絡を確認後、当方にて定期課金の停止処理（または停止タイミングの指定）を行います。</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">返金・キャンセルについて</div>
+                            <div>デジタルコンテンツおよびオンラインサービスの性質上、原則として返金・キャンセルはお受けしておりません。ただし、法令に基づき対応が必要な場合はこの限りではありません。</div>
+                          </div>
+                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 pb-4">
+                            <div className="font-bold text-gray-900">動作環境</div>
+                            <div>最新版の主要ブラウザ（Chrome、Safari、Edge）での利用を推奨します。ご利用環境により一部機能が正常に動作しない場合があります。</div>
+                          </div>
                       </div>
                       
                       <div className="text-center mt-10">

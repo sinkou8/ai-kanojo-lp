@@ -60,7 +60,7 @@
         const Heart = (props) => <IconBase {...props}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></IconBase>;
         const MessageCircle = (props) => <IconBase {...props}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></IconBase>;
         const Mic = (props) => <IconBase {...props}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></IconBase>;
-        const Sparkles = (props) => <IconBase {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275-1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H1"/></IconBase>;
+        const Sparkles = (props) => <IconBase {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275-1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H1"/></IconBase>;
         const ChevronDown = (props) => <IconBase {...props}><path d="m6 9 6 6 6-6"/></IconBase>;
         const ChevronUp = (props) => <IconBase {...props}><path d="m18 15-6-6-6 6"/></IconBase>;
         const ArrowRight = (props) => <IconBase {...props}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></IconBase>;
@@ -200,7 +200,7 @@
             id: 7,
             name: "さくら (Sakura)",
             role: "キャバ嬢 / 知的",
-            description: "22歳、No.1キャバ嬢。見た目は派手で華やかだが、実は国立大学出身で非常に頭が良い。会話のテンポが良く、相手の心理を読むのが得意。",
+            description: "22歳、No.1キャバ嬢。実は国立大学出身。相手の心理を読むのが得意。",
             image: "./sakura.png",
             profile: {
               age: "22歳", height: "162cm", birthday: "12月25日", job: "No.1キャバ嬢",
@@ -637,15 +637,17 @@
               </section>
 
               {/* 4. Character Customization */}
-              <section className="py-20 md:py-24 bg-white overflow-hidden">
+              <section className="py-12 md:py-24 bg-white overflow-hidden">
                 <div className="max-w-6xl mx-auto px-4">
-                  <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                    <div className="relative group cursor-pointer order-2 lg:order-1">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-200 to-indigo-200 rounded-full filter blur-[100px] opacity-40 group-hover:opacity-60 transition-opacity duration-500"></div>
+                  <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                    
+                    {/* 画像エリア: モバイルでは order-1 で上に表示。レスポンシブサイズ調整 */}
+                    <div className="relative group cursor-pointer order-1 lg:order-1 w-full flex justify-center">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-200 to-indigo-200 rounded-full filter blur-[60px] md:blur-[100px] opacity-40 group-hover:opacity-60 transition-opacity duration-500 w-2/3 mx-auto h-2/3 top-1/6"></div>
                         <SafeImage 
                           src={activeChar.image} 
                           alt="Main Character" 
-                          className="relative w-full max-w-xs md:max-w-md mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-cover rounded-3xl"
+                          className="relative w-auto h-[400px] md:h-[500px] max-w-full drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-contain rounded-3xl"
                           referrerPolicy="no-referrer"
                         />
                         <div className="absolute bottom-4 right-10 z-20">
@@ -653,21 +655,28 @@
                         </div>
                     </div>
 
-                    <div className="order-1 lg:order-2">
+                    {/* テキスト & セレクターエリア: モバイルでは order-2 で下に表示 */}
+                    <div className="order-2 lg:order-2 w-full">
                       <div className="inline-flex items-center gap-2 mb-4 text-blue-500 font-bold uppercase tracking-wider text-sm">
                           <span className="w-8 h-[2px] bg-blue-500"></span> Character
                       </div>
                       
                       {/* Character Selector with horizontal scroll */}
                       <div className="relative">
-                        {/* Scroll buttons for desktop */}
+                        {/* Scroll buttons for desktop only */}
                         <button 
                           onClick={() => scroll('left')}
                           className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"
                         >
                           <ChevronLeft size={20} className="text-gray-600" />
                         </button>
-                        <div ref={scrollContainerRef} className="flex gap-3 mb-6 overflow-x-auto pb-4 scrollbar-hide snap-x">
+                        
+                        {/* スマホスクロール対応: px-1 で見切れ防止、touchスクロール有効化 */}
+                        <div 
+                          ref={scrollContainerRef} 
+                          className="flex gap-3 mb-6 overflow-x-auto pb-4 px-1 scrollbar-hide snap-x scroll-smooth"
+                          style={{ WebkitOverflowScrolling: 'touch' }}
+                        >
                           {CHARACTERS.map((char, index) => (
                             <button
                               key={char.id}
@@ -683,6 +692,7 @@
                             </button>
                           ))}
                         </div>
+                        
                         <button 
                           onClick={() => scroll('right')}
                           className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 bg-white/80 p-1 rounded-full shadow-md hover:bg-white hidden md:block"

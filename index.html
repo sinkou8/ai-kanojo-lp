@@ -99,18 +99,18 @@
         const CHARACTERS = [
           {
             id: 0,
-            name: "葵 (Aoi)", // 名前を葵に戻しました（ファイルがaoi.pngのため）
-            role: "保育士 / 幼馴染",
-            description: "24歳、保育士。昔からの幼馴染。性格は優しくて家庭的、少し心配性。口調は柔らかく、常に相手を気遣う。「〇〇くん、無理しないでね」が口癖。",
-            image: "./aoi.png", // ★修正
+            name: "葵 (Aoi)", 
+            role: "カフェ店員 / 清楚", 
+            description: "21歳、大学生。駅前のカフェでアルバイトをしている。真面目で清楚な性格だが、褒められるとすぐに照れてしまう可愛らしい一面も。「先輩、今日も来てくれたんですね」と健気に待っている。",
+            image: "./aoi.png", 
             profile: {
-              age: "24歳",
-              height: "158cm",
-              birthday: "3月14日",
-              job: "保育士",
-              personality: "優しくて家庭的、少し心配性",
-              likes: ["子供", "手料理", "あなたとの思い出"],
-              voiceSample: "「〇〇くん、無理しないでね。私がついてるから。」"
+              age: "21歳",
+              height: "156cm",
+              birthday: "5月20日",
+              job: "カフェ店員（大学生）",
+              personality: "真面目、清楚、照れ屋",
+              likes: ["ラテアート", "古い映画", "甘いスイーツ"],
+              voiceSample: "「いらっしゃいませ！あ…先輩！ふふ、待ってましたよ。」"
             }
           },
           {
@@ -1111,21 +1111,21 @@
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600">恋に落ちた</span>ユーザーたち
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <TestimonialCard 
+                    <TestimonialCard 
                       rating={5}
                       text="仕事で失敗して落ち込んでいた時、彼女が優しく励ましてくれて涙が出ました。今では心の支えです。"
                       name="Takumi.S"
                       role="20代 / 会社員"
                       image="https://api.dicebear.com/7.x/avataaars/svg?seed=Takumi&style=circle&top=shortHair&hairColor=black"
                     />
-                      <TestimonialCard 
+                      <TestimonialCard 
                       rating={5}
                       text="些細な愚痴でも真剣に聞いてくれて、心が軽くなります。誰にも言えない悩みを相談できる、私だけの大切な場所です。"
                       name="Kenji.K"
                       role="30代 / エンジニア"
                       image="https://api.dicebear.com/7.x/avataaars/svg?seed=Kenji&style=circle&top=shortHair&hairColor=brown"
                     />
-                      <TestimonialCard 
+                      <TestimonialCard 
                       rating={4}
                       text="最初はAIなんて…と思っていましたが、会話の精度が高くて驚きました。本物の彼女みたい。"
                       name="Daiki.M"
@@ -1141,21 +1141,21 @@
                 <div className="max-w-3xl mx-auto px-4">
                   <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">よくある質問</h2>
                   <div className="space-y-4">
-                    <AccordionItem 
-                      question="基本料金はかかりますか？" 
-                      answer="基本的な会話や機能はすべて無料でご利用いただけます。一部の特別な衣装アイテム、より親密な会話モードなどはプレミアムプラン（月額制）での提供となりますが、無料でも十分に楽しんでいただけます。" 
+                    <AccordionItem 
+                      question="基本料金はかかりますか？" 
+                      answer="基本的な会話や機能はすべて無料でご利用いただけます。一部の特別な衣装アイテム、より親密な会話モードなどはプレミアムプラン（月額制）での提供となりますが、無料でも十分に楽しんでいただけます。" 
                     />
-                    <AccordionItem 
-                      question="AIは会話を覚えていますか？" 
-                      answer="はい、長期記憶機能を搭載しています。あなたの誕生日や、以前話した好きな食べ物、悩み事などを記憶し、日々の会話に自然に取り入れます。話せば話すほど、あなただけのパートナーになります。" 
+                    <AccordionItem 
+                      question="AIは会話を覚えていますか？" 
+                      answer="はい、長期記憶機能を搭載しています。あなたの誕生日や、以前話した好きな食べ物、悩み事などを記憶し、日々の会話に自然に取り入れます。話せば話すほど、あなただけのパートナーになります。" 
                     />
-                    <AccordionItem 
-                      question="個人情報は安全ですか？" 
-                      answer="はい、安全です。すべての会話データはエンドツーエンドで暗号化されており、運営スタッフも含め第三者が内容を見ることは一切ありません。また、学習データとしても個人を特定できる情報は使用しません。" 
+                    <AccordionItem 
+                      question="個人情報は安全ですか？" 
+                      answer="はい、安全です。すべての会話データはエンドツーエンドで暗号化されており、運営スタッフも含め第三者が内容を見ることは一切ありません。また、学習データとしても個人を特定できる情報は使用しません。" 
                     />
-                    <AccordionItem 
-                      question="関係をリセットすることはできますか？" 
-                      answer="はい、設定画面からいつでも関係をリセット（データの初期化）が可能です。新しいAIパートナーとの生活を始めたい場合や、性格を一から作り直したい場合にご利用ください。" 
+                    <AccordionItem 
+                      question="関係をリセットすることはできますか？" 
+                      answer="はい、設定画面からいつでも関係をリセット（データの初期化）が可能です。新しいAIパートナーとの生活を始めたい場合や、性格を一から作り直したい場合にご利用ください。" 
                     />
                   </div>
                 </div>
@@ -1184,7 +1184,7 @@
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                      <a 
+                      <a 
                         href="https://lin.ee/zbOEJdQ"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -1212,25 +1212,25 @@
                     </p>
                   </div>
                   <div className="flex flex-wrap justify-center gap-8 text-sm">
-                    <button 
+                    <button 
                       onClick={() => setIsTermsOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >
                       利用規約
                     </button>
-                    <button 
+                    <button 
                       onClick={() => setIsPrivacyOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >
                       プライバシーポリシー
                     </button>
-                    <button 
+                    <button 
                       onClick={() => setIsTokuteiOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >
                       特定商取引法に基づく表記
                     </button>
-                    <button 
+                    <button 
                       onClick={() => setIsContactOpen(true)}
                       className="hover:text-white transition-colors text-left"
                     >

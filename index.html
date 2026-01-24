@@ -684,48 +684,60 @@
                           <span className="w-8 h-[2px] bg-blue-500"></span> Character
                       </div>
                       
-                      {/* Character Selector (simple horizontal scroll) */}
-                      <div className="w-full">
-                        <div
-                          ref={scrollContainerRef}
-                          className="scroll-lock-x flex gap-4 mb-6 overflow-x-scroll pb-4 px-2 scrollbar-hide snap-x scroll-smooth w-full"
-                          style={{
-                            WebkitOverflowScrolling: "touch",
-                            overscrollBehaviorX: "contain",
-                            touchAction: "pan-y",
-                          }}
-                          onTouchStart={onTouchStart}
-                          onTouchEnd={onTouchEnd}
-                          onTouchCancel={onTouchEnd}
-                          onTouchMoveCapture={onTouchMove}
-                        >
-                          {CHARACTERS.map((char, index) => (
-                            <button
-                              key={char.id}
-                              onClick={() => setActiveCharIndex(index)}
-                              className={`shrink-0 w-16 h-16 rounded-full border-2 transition-all duration-200 overflow-hidden bg-white ${
-                                activeCharIndex === index
-                                  ? "border-blue-500 scale-110 shadow-lg ring-2 ring-blue-200"
-                                  : "border-gray-200 opacity-70"
-                              }`}
-                              style={{ scrollSnapAlign: "center" }}
-                              title={char.name}
-                              type="button"
-                            >
-                              <SafeImage
-                                src={char.image}
-                                alt={char.name}
-                                className="w-full h-full object-cover"
-                                referrerPolicy="no-referrer"
-                              />
-                            </button>
-                          ))}
-                        </div>
+                      {/* Character Selector with horizontal scroll */}
+<div className="relative w-full z-[999] isolate pointer-events-auto">
+  {/* Scroll buttons */}
+  <button
+    onClick={() => scroll('left')}
+    className="absolute left-0 top-1/2 -translate-y-1/2 z-[1000] bg-white rounded-full shadow-lg border border-gray-100 hover:bg-gray-50 active:scale-95 transition-transform pointer-events-auto flex items-center justify-center"
+    aria-label="Previous character"
+    type="button"
+    style={{ width: 40, height: 40 }}
+  >
+    <ChevronLeft size={20} className="text-gray-600" />
+  </button>
 
-                        <p className="text-xs text-gray-500">
-                          ← 横にスワイプしてキャラを選べます
-                        </p>
-                      </div>
+  <div
+    ref={scrollContainerRef}
+    className="flex gap-4 mb-6 overflow-x-scroll overflow-y-hidden pb-4 px-10 scrollbar-hide w-full pointer-events-auto"
+    style={{
+      WebkitOverflowScrolling: 'touch',
+      touchAction: 'auto',
+      overscrollBehaviorX: 'contain',
+    }}
+  >
+    {CHARACTERS.map((char, index) => (
+      <button
+        key={char.id}
+        onClick={() => setActiveCharIndex(index)}
+        className={`shrink-0 w-16 h-16 rounded-full border-2 transition-all duration-300 overflow-hidden bg-white pointer-events-auto ${
+          activeCharIndex === index
+            ? 'border-blue-500 scale-110 shadow-lg ring-2 ring-blue-200'
+            : 'border-gray-200 opacity-60 hover:opacity-100'
+        }`}
+        title={char.name}
+        type="button"
+      >
+        <SafeImage
+          src={char.image}
+          alt={char.name}
+          className="w-full h-full object-cover pointer-events-none"
+          referrerPolicy="no-referrer"
+        />
+      </button>
+    ))}
+  </div>
+
+  <button
+    onClick={() => scroll('right')}
+    className="absolute right-0 top-1/2 -translate-y-1/2 z-[1000] bg-white rounded-full shadow-lg border border-gray-100 hover:bg-gray-50 active:scale-95 transition-transform pointer-events-auto flex items-center justify-center"
+    aria-label="Next character"
+    type="button"
+    style={{ width: 40, height: 40 }}
+  >
+    <ChevronRight size={20} className="text-gray-600" />
+  </button>
+</div>
 
                       <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 md:mb-8">
                         運命の相手がここに。<br/>

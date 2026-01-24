@@ -119,13 +119,13 @@
           {
             id: 0,
             name: "葵 (Aoi)",
-            role: "保育士 / 幼馴染",
-            description: "24歳、保育士。昔からの幼馴染。性格は優しくて家庭的、少し心配性。口調は柔らかく、常に相手を気遣う。「〇〇くん、無理しないでね」が口癖。",
+            role: "カフェ店員 / 癒やし",
+            description: "22歳、カフェ店員。いつも笑顔で迎えてくれる看板娘。性格は穏やかで聞き上手。美味しいコーヒーを淹れるのが得意。「お疲れ様です、今日も頑張りましたね」と優しく労ってくれる。",
             image: "./aoi.png",
             profile: {
-              age: "24歳", height: "158cm", birthday: "3月14日", job: "保育士",
-              personality: "優しくて家庭的、少し心配性", likes: ["子供", "手料理", "あなたとの思い出"],
-              voiceSample: "「〇〇くん、無理しないでね。私がついてるから。」"
+              age: "22歳", height: "156cm", birthday: "5月15日", job: "カフェ店員",
+              personality: "穏やか、聞き上手、癒やし系", likes: ["ラテアート", "お菓子作り", "散歩"],
+              voiceSample: "「いらっしゃいませ！ふふ、待ってましたよ。特製のブレンド、淹れておきました。」"
             }
           },
           {
@@ -343,11 +343,12 @@
           const scroll = (direction) => {
             if (scrollContainerRef.current) {
               const { current } = scrollContainerRef;
+              // scrollLeftの直接操作（最も互換性が高い）
               const scrollAmount = 200; 
               if (direction === 'left') {
-                current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                current.scrollLeft -= scrollAmount;
               } else {
-                current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                current.scrollLeft += scrollAmount;
               }
             }
           };
@@ -555,7 +556,7 @@
                           </div>
                         </div>
 
-                        {/* Floating Badges */}
+                        {/* Floating Badges - Only kept the one not blocking or with safe layout */}
                         <div className="absolute top-20 -right-6 md:-right-12 bg-white/90 backdrop-blur-md p-3 md:p-4 rounded-2xl shadow-xl animate-float-slow flex items-center gap-3 z-20 border border-white/50 scale-90 md:scale-100">
                            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-500 shadow-inner">
                              <Heart size={20} fill="currentColor" />
@@ -566,22 +567,6 @@
                            </div>
                         </div>
                         
-                        <div className="absolute bottom-24 -left-6 md:-left-16 bg-white/90 backdrop-blur-md p-3 md:p-4 rounded-2xl shadow-xl flex items-center gap-3 z-20 animate-float-medium border border-white/50 scale-90 md:scale-100">
-                           <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-500 shadow-inner">
-                             <Mic size={20} />
-                           </div>
-                           <div>
-                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">Voice Message</p>
-                             <div className="flex items-center gap-2">
-                                <span className="font-extrabold text-gray-800">0:14</span>
-                                <div className="flex gap-0.5 h-3 items-end">
-                                    <span className="w-0.5 h-full bg-indigo-400 animate-pulse"></span>
-                                    <span className="w-0.5 h-2/3 bg-indigo-400 animate-pulse delay-75"></span>
-                                    <span className="w-0.5 h-1/3 bg-indigo-400 animate-pulse delay-150"></span>
-                                </div>
-                             </div>
-                           </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -683,7 +668,8 @@
                         <SafeImage
                             src={activeChar.image}
                             alt="Main Character"
-                            className="relative w-[120%] max-w-none md:w-auto md:max-w-full h-[400px] md:h-[500px] drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-contain rounded-3xl -ml-[10%] md:ml-0 pointer-events-none"
+                            // 修正箇所: w-[130%], -ml-[25%] に変更して左寄せを強化
+                            className="relative w-[130%] max-w-none md:w-auto md:max-w-full h-[400px] md:h-[500px] drop-shadow-2xl hover:scale-105 transition-transform duration-500 z-10 object-contain rounded-3xl -ml-[25%] md:ml-0 pointer-events-none"
                             referrerPolicy="no-referrer"
                         />
                         
@@ -702,12 +688,16 @@
                       <div className="w-full">
                         <div
                           ref={scrollContainerRef}
-                          className="flex gap-4 mb-6 overflow-x-scroll pb-4 px-2 scrollbar-hide"
+                          className="scroll-lock-x flex gap-4 mb-6 overflow-x-scroll pb-4 px-2 scrollbar-hide snap-x scroll-smooth w-full"
                           style={{
                             WebkitOverflowScrolling: "touch",
-                            touchAction: "auto",
-                            scrollSnapType: "x mandatory",
+                            overscrollBehaviorX: "contain",
+                            touchAction: "pan-y",
                           }}
+                          onTouchStart={onTouchStart}
+                          onTouchEnd={onTouchEnd}
+                          onTouchCancel={onTouchEnd}
+                          onTouchMoveCapture={onTouchMove}
                         >
                           {CHARACTERS.map((char, index) => (
                             <button

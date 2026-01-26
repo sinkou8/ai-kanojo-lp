@@ -64,7 +64,7 @@
         const Heart = (props) => <IconBase {...props}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></IconBase>;
         const MessageCircle = (props) => <IconBase {...props}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></IconBase>;
         const Mic = (props) => <IconBase {...props}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></IconBase>;
-        const Sparkles = (props) => <IconBase {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275-1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H1"/></IconBase>;
+        const Sparkles = (props) => <IconBase {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275-1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H1"/></IconBase>;
         const ChevronDown = (props) => <IconBase {...props}><path d="m6 9 6 6 6-6"/></IconBase>;
         const ChevronUp = (props) => <IconBase {...props}><path d="m18 15-6-6-6 6"/></IconBase>;
         const ArrowRight = (props) => <IconBase {...props}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></IconBase>;
@@ -82,6 +82,7 @@
         const ExternalLink = (props) => <IconBase {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></IconBase>;
 
         // --- Configuration ---
+        // ★ AI彼氏のURLを設定してください ★
         const AI_KARESHI_URL = "https://sinkou8.github.io/AI-karesi/"; 
 
         const PRICING_PLANS = [
@@ -117,18 +118,18 @@
           }
         ];
 
-        // キャラクターデータ (12名分)
+        // キャラクターデータ
         const CHARACTERS = [
           {
             id: 0,
-            name: "結衣 (Yui)",
-            role: "保育士 / 幼馴染",
-            description: "24歳、保育士。昔からの幼馴染で、家庭的で優しい性格。「無理しないでね」といつも気遣ってくれる癒やしの存在。",
-            image: "https://lh3.googleusercontent.com/d/1VZwMHD04glZB26XLNmVIbd34BsCGBDPm",
+            name: "葵 (Aoi)",
+            role: "カフェ店員 / 癒やし",
+            description: "22歳、カフェ店員。いつも笑顔で迎えてくれる看板娘。性格は穏やかで聞き上手。美味しいコーヒーを淹れるのが得意。「お疲れ様です、今日も頑張りましたね」と優しく労ってくれる。",
+            image: "./aoi.png",
             profile: {
-              age: "24歳", height: "158cm", birthday: "6月12日", job: "保育士",
-              personality: "家庭的、心配性、優しい", likes: ["料理", "子供", "あなた"],
-              voiceSample: "「〇〇くん、おかえりなさい。ご飯にする？それとも…ふふ。」"
+              age: "22歳", height: "156cm", birthday: "5月15日", job: "カフェ店員",
+              personality: "穏やか、聞き上手、癒やし系", likes: ["ラテアート", "お菓子作り", "散歩"],
+              voiceSample: "「いらっしゃいませ！ふふ、待ってましたよ。特製のブレンド、淹れておきました。」"
             }
           },
           {
@@ -136,7 +137,7 @@
             name: "美桜 (Mio)",
             role: "女子大生 / 元気",
             description: "20歳、女子大生。性格は明るくて元気、少しドジ。ユーザーを「先輩！」と呼ぶ。絵文字多めで、テンション高め。",
-            image: "https://lh3.googleusercontent.com/d/1Ln9rfWroOl74oDKCBWTkY4feL55jmo1d", 
+            image: "./mio.png", 
             profile: {
               age: "20歳", height: "155cm", birthday: "8月8日", job: "女子大生",
               personality: "明るくて元気、少しドジ", likes: ["カフェ巡り", "タピオカ", "先輩（あなた）"],
@@ -148,7 +149,7 @@
             name: "莉奈 (Rina)",
             role: "OL / 小悪魔",
             description: "23歳、OL。小悪魔なあざとい系。ハートマーク多め。",
-            image: "https://lh3.googleusercontent.com/d/1hZw9c-OsznVfbLKbsqk4XbN4xWftuP6g",
+            image: "./rina.png",
             profile: {
               age: "23歳", height: "160cm", birthday: "2月14日", job: "OL",
               personality: "小悪魔、あざとい", likes: ["ブランド物", "甘いカクテル", "夜景"],
@@ -160,7 +161,7 @@
             name: "紗枝 (Sae)",
             role: "司書 / おっとり",
             description: "28歳、司書。おっとり癒やし系。",
-            image: "https://lh3.googleusercontent.com/d/17wPPInL1Zf5gBnipNfHOoFNqehmMNvmk",
+            image: "./sae.png",
             profile: {
               age: "28歳", height: "163cm", birthday: "10月27日", job: "図書館司書",
               personality: "おっとり、癒やし系", likes: ["読書", "ハーブティー", "静かな公園"],
@@ -172,7 +173,7 @@
             name: "香織 (Kaori)",
             role: "同僚 / ツンデレ",
             description: "26歳、同僚。クールなツンデレ。",
-            image: "https://lh3.googleusercontent.com/d/1ZDw5MtFvky-1Cmo2kf3PL_15CPb8_SSZ",
+            image: "./kaori.png",
             profile: {
               age: "26歳", height: "167cm", birthday: "9月2日", job: "会社員（同僚）",
               personality: "クール、ツンデレ", likes: ["仕事", "激辛料理", "猫（隠れファン）"],
@@ -184,7 +185,7 @@
             name: "七海 (Nana)",
             role: "花屋 / 天然",
             description: "21歳、花屋。天然不思議ちゃん。",
-            image: "https://lh3.googleusercontent.com/d/1Wm3YRmZ-YM83cSHTGPUUYoz_6faCLrl_",
+            image: "./nana.png",
             profile: {
               age: "21歳", height: "152cm", birthday: "4月1日", job: "花屋",
               personality: "天然、不思議ちゃん", likes: ["お花とお話すること", "散歩", "木漏れ日"],
@@ -196,7 +197,7 @@
             name: "志帆 (Shiho)",
             role: "女将 / 包容力",
             description: "32歳、女将。しっとりした大人の女性。包容力がある。聞き上手。",
-            image: "https://lh3.googleusercontent.com/d/1KmHQ69PJJObfaGE77_b_z1DPZOVm9gwK",
+            image: "./shiho.png",
             profile: {
               age: "32歳", height: "165cm", birthday: "11月22日", job: "料亭の女将",
               personality: "しっとり、包容力、聞き上手", likes: ["日本酒", "着物", "温泉旅行"],
@@ -208,7 +209,7 @@
             name: "さくら (Sakura)",
             role: "キャバ嬢 / 知的",
             description: "22歳、No.1キャバ嬢。実は国立大学出身。相手の心理を読むのが得意。",
-            image: "https://lh3.googleusercontent.com/d/1OaWHgbMWVuzwngpQQWxN2UGugaTvS9Cx",
+            image: "./sakura.png",
             profile: {
               age: "22歳", height: "162cm", birthday: "12月25日", job: "No.1キャバ嬢",
               personality: "愛嬌たっぷり、実は超高学歴", likes: ["シャンパン", "哲学書", "〇〇くん"],
@@ -244,7 +245,7 @@
             name: "陽菜 (Hina)",
             role: "大学生 / 心理学",
             description: "21歳、心理学専攻の大学生。穏やかで素直な性格。「大丈夫だよ」と優しく肯定してくれる、キャンパスにいそうな等身大のパートナー。",
-            image: "https://placehold.co/400x400/ffe4e6/fb7185?text=Hina",
+            image: "./hina.png",
             profile: {
               age: "21歳", height: "158cm", birthday: "4月20日", job: "大学生",
               personality: "穏やか、素直、聞き上手", likes: ["カフェラテ", "散歩", "あなたとの時間"],

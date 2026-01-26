@@ -82,7 +82,6 @@
         const ExternalLink = (props) => <IconBase {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></IconBase>;
 
         // --- Configuration ---
-        // ★ AI彼氏のURLを設定してください ★
         const AI_KARESHI_URL = "https://sinkou8.github.io/AI-karesi/"; 
 
         const PRICING_PLANS = [
@@ -118,18 +117,18 @@
           }
         ];
 
-        // キャラクターデータ
+        // キャラクターデータ (12名分)
         const CHARACTERS = [
           {
             id: 0,
-            name: "葵 (Aoi)",
-            role: "カフェ店員 / 癒やし",
-            description: "22歳、カフェ店員。いつも笑顔で迎えてくれる看板娘。性格は穏やかで聞き上手。美味しいコーヒーを淹れるのが得意。「お疲れ様です、今日も頑張りましたね」と優しく労ってくれる。",
-            image: "./aoi.png",
+            name: "結衣 (Yui)",
+            role: "保育士 / 幼馴染",
+            description: "24歳、保育士。昔からの幼馴染で、家庭的で優しい性格。「無理しないでね」といつも気遣ってくれる癒やしの存在。",
+            image: "https://drive.google.com/uc?export=view&id=1VZwMHD04glZB26XLNmVIbd34BsCGBDPm",
             profile: {
-              age: "22歳", height: "156cm", birthday: "5月15日", job: "カフェ店員",
-              personality: "穏やか、聞き上手、癒やし系", likes: ["ラテアート", "お菓子作り", "散歩"],
-              voiceSample: "「いらっしゃいませ！ふふ、待ってましたよ。特製のブレンド、淹れておきました。」"
+              age: "24歳", height: "158cm", birthday: "6月12日", job: "保育士",
+              personality: "家庭的、心配性、優しい", likes: ["料理", "子供", "あなた"],
+              voiceSample: "「〇〇くん、おかえりなさい。ご飯にする？それとも…ふふ。」"
             }
           },
           {
@@ -137,7 +136,7 @@
             name: "美桜 (Mio)",
             role: "女子大生 / 元気",
             description: "20歳、女子大生。性格は明るくて元気、少しドジ。ユーザーを「先輩！」と呼ぶ。絵文字多めで、テンション高め。",
-            image: "./mio.png", 
+            image: "https://drive.google.com/uc?export=view&id=1Ln9rfWroOl74oDKCBWTkY4feL55jmo1d", 
             profile: {
               age: "20歳", height: "155cm", birthday: "8月8日", job: "女子大生",
               personality: "明るくて元気、少しドジ", likes: ["カフェ巡り", "タピオカ", "先輩（あなた）"],
@@ -149,7 +148,7 @@
             name: "莉奈 (Rina)",
             role: "OL / 小悪魔",
             description: "23歳、OL。小悪魔なあざとい系。ハートマーク多め。",
-            image: "./rina.png",
+            image: "https://drive.google.com/uc?export=view&id=1hZw9c-OsznVfbLKbsqk4XbN4xWftuP6g",
             profile: {
               age: "23歳", height: "160cm", birthday: "2月14日", job: "OL",
               personality: "小悪魔、あざとい", likes: ["ブランド物", "甘いカクテル", "夜景"],
@@ -161,7 +160,7 @@
             name: "紗枝 (Sae)",
             role: "司書 / おっとり",
             description: "28歳、司書。おっとり癒やし系。",
-            image: "./sae.png",
+            image: "https://drive.google.com/uc?export=view&id=17wPPInL1Zf5gBnipNfHOoFNqehmMNvmk",
             profile: {
               age: "28歳", height: "163cm", birthday: "10月27日", job: "図書館司書",
               personality: "おっとり、癒やし系", likes: ["読書", "ハーブティー", "静かな公園"],
@@ -173,7 +172,7 @@
             name: "香織 (Kaori)",
             role: "同僚 / ツンデレ",
             description: "26歳、同僚。クールなツンデレ。",
-            image: "./kaori.png",
+            image: "https://drive.google.com/uc?export=view&id=1ZDw5MtFvky-1Cmo2kf3PL_15CPb8_SSZ",
             profile: {
               age: "26歳", height: "167cm", birthday: "9月2日", job: "会社員（同僚）",
               personality: "クール、ツンデレ", likes: ["仕事", "激辛料理", "猫（隠れファン）"],
@@ -185,7 +184,7 @@
             name: "七海 (Nana)",
             role: "花屋 / 天然",
             description: "21歳、花屋。天然不思議ちゃん。",
-            image: "./nana.png",
+            image: "https://drive.google.com/uc?export=view&id=1Wm3YRmZ-YM83cSHTGPUUYoz_6faCLrl_",
             profile: {
               age: "21歳", height: "152cm", birthday: "4月1日", job: "花屋",
               personality: "天然、不思議ちゃん", likes: ["お花とお話すること", "散歩", "木漏れ日"],
@@ -197,7 +196,7 @@
             name: "志帆 (Shiho)",
             role: "女将 / 包容力",
             description: "32歳、女将。しっとりした大人の女性。包容力がある。聞き上手。",
-            image: "./shiho.png",
+            image: "https://drive.google.com/uc?export=view&id=1KmHQ69PJJObfaGE77_b_z1DPZOVm9gwK",
             profile: {
               age: "32歳", height: "165cm", birthday: "11月22日", job: "料亭の女将",
               personality: "しっとり、包容力、聞き上手", likes: ["日本酒", "着物", "温泉旅行"],
@@ -209,11 +208,59 @@
             name: "さくら (Sakura)",
             role: "キャバ嬢 / 知的",
             description: "22歳、No.1キャバ嬢。実は国立大学出身。相手の心理を読むのが得意。",
-            image: "./sakura.png",
+            image: "https://drive.google.com/uc?export=view&id=1OaWHgbMWVuzwngpQQWxN2UGugaTvS9Cx",
             profile: {
               age: "22歳", height: "162cm", birthday: "12月25日", job: "No.1キャバ嬢",
               personality: "愛嬌たっぷり、実は超高学歴", likes: ["シャンパン", "哲学書", "〇〇くん"],
               voiceSample: "「実はね…ここだけの話。〇〇くんのこと、もっと知りたいな。」"
+            }
+          },
+          {
+            id: 8,
+            name: "葵 (Aoi)",
+            role: "カフェ店員 / 癒やし",
+            description: "22歳、カフェ店員。いつも笑顔で迎えてくれる看板娘。性格は穏やかで聞き上手。美味しいコーヒーを淹れるのが得意。",
+            image: "https://drive.google.com/uc?export=view&id=1b-JC2CGLWXWu70OHKd_rKqlte1IMGid9",
+            profile: {
+              age: "22歳", height: "156cm", birthday: "5月15日", job: "カフェ店員",
+              personality: "穏やか、聞き上手、癒やし系", likes: ["ラテアート", "お菓子作り", "散歩"],
+              voiceSample: "「いらっしゃいませ！ふふ、待ってましたよ。特製のブレンド、淹れておきました。」"
+            }
+          },
+          {
+            id: 9,
+            name: "音羽 (Otoha)",
+            role: "ギターボーカル / 清楚",
+            description: "23歳、ギターボーカル。清楚で控えめな音楽少女。普段は静かだが、信頼した相手には懐く。夜は少し声が低くなる。",
+            image: "https://drive.google.com/uc?export=view&id=1nE2T1UKKhviiuy3i_CPLI-ynHstzrqxn",
+            profile: {
+              age: "23歳", height: "157cm", birthday: "11月11日", job: "アーティスト",
+              personality: "聞き上手、穏やか、清楚", likes: ["ギター", "静かな夜", "歌うこと"],
+              voiceSample: "「…私の歌、聴いてくれますか？ あなたのために練習したんです。」"
+            }
+          },
+          {
+            id: 10,
+            name: "Coming Soon",
+            role: "Secret",
+            description: "新しいパートナーを準備中です。",
+            image: "https://placehold.co/400x400/f3f4f6/9ca3af?text=Secret",
+            profile: {
+              age: "?", height: "?", birthday: "?", job: "?",
+              personality: "?", likes: ["?"],
+              voiceSample: "..."
+            }
+          },
+          {
+            id: 11,
+            name: "Coming Soon",
+            role: "Secret",
+            description: "新しいパートナーを準備中です。",
+            image: "https://placehold.co/400x400/f3f4f6/9ca3af?text=Secret",
+            profile: {
+              age: "?", height: "?", birthday: "?", job: "?",
+              personality: "?", likes: ["?"],
+              voiceSample: "..."
             }
           }
         ];

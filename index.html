@@ -87,7 +87,7 @@
 
         const PRICING_PLANS = [
           {
-            name: "おためし無料",
+            name: "フリープラン", // 名前を変更して「期間制限なし」を強調
             price: "0",
             period: "/月",
             badge: "まずは、彼女との相性をチェック。",
@@ -95,10 +95,10 @@
             url: "https://lin.ee/zbOEJdQ",
             isPremium: false,
             features: [
-              "基本的な会話",
+              "基本的な会話機能",
               "彼女からの挨拶メッセージ",
               "心地よい距離感でのお喋り",
-              "3日間無料体験"
+              "期間制限なしで利用可能" // 「3日間」を削除し、ずっと使えることを明記
             ]
           },
           {
@@ -107,7 +107,8 @@
             period: "/月",
             badge: "彼女だけの特別を、あなたに。",
             buttonText: "恋人コースを始める",
-            url: "#", 
+            // ★ここに実際の決済URL（Stripeなど）を設定してください
+            url: "https://buy.stripe.com/test_dummy_link", 
             isPremium: true,
             features: [
               "恋人だけの甘い会話モード解放",
@@ -943,16 +944,58 @@
                       <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">プライバシーポリシー</h2>
                       <div className="text-gray-700 space-y-6 text-sm leading-relaxed">
                         <p>
-                          当方は、本サービスにおいて取得する個人情報について、以下の方針に基づき、適切に取り扱います。
+                          Hello-ABC（以下「当方」）は、当方が提供するサービス「AIカノジョ」（以下「本サービス」）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」）を定めます。
                         </p>
-                        {/* 簡略化のため中身は一部省略しますが、構造は維持 */}
+                        
                         <div>
-                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">■ 取得する情報</h3>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">1. 取得する情報</h3>
                           <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600">
-                            <li>メールアドレス</li>
-                            <li>決済に関する情報</li>
+                            <li>ユーザー情報（LINEアカウント名、メールアドレス等）</li>
+                            <li>決済に関する情報（クレジットカード情報等は決済代行会社が管理し、当方は保持しません）</li>
+                            <li>サービス利用履歴（会話ログ、アクセスログ等）</li>
+                            <li>お問い合わせ時にご提供いただいた情報</li>
                           </ul>
                         </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">2. 利用目的</h3>
+                          <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600">
+                            <li>本サービスの提供および運営のため</li>
+                            <li>ユーザーからのお問い合わせに回答するため</li>
+                            <li>有料プランの決済処理および管理のため</li>
+                            <li>AIモデルの精度向上およびサービス改善のため（個人を特定できない形での利用）</li>
+                            <li>重要なお知らせやメンテナンス情報の通知のため</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">3. 第三者への提供</h3>
+                          <p className="ml-2 text-gray-600">
+                            当方は、法令に基づく場合および人の生命・身体・財産の保護が必要な場合を除き、あらかじめユーザーの同意を得ることなく第三者に個人情報を提供することはありません。
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">4. 外部サービスとの連携</h3>
+                          <p className="ml-2 text-gray-600">
+                            本サービスはLINE株式会社および決済代行会社（Stripe等）のサービスを利用しています。これらの外部サービスにおける個人情報の取扱いは、各社のプライバシーポリシーに従います。
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">5. 安全管理措置</h3>
+                          <p className="ml-2 text-gray-600">
+                            当方は、個人情報の漏洩、滅失またはき損の防止その他個人情報の安全管理のために、アクセス制限や通信の暗号化（SSL）など、必要かつ適切な措置を講じます。
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">6. 開示・訂正・削除</h3>
+                          <p className="ml-2 text-gray-600">
+                            ユーザーご本人から個人情報の開示、訂正、追加、削除、利用停止のご請求があった場合は、ご本人確認の上、速やかに対応いたします。下記のお問い合わせ窓口までご連絡ください。
+                          </p>
+                        </div>
+
                         <div className="text-center mt-8">
                           <button 
                             onClick={() => setIsPrivacyOpen(false)}
@@ -983,18 +1026,37 @@
                       <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">特定商取引法に基づく表記</h2>
                       
                       <div className="space-y-4 text-sm text-gray-700">
-                          <div className="grid md:grid-cols-[200px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
-                            <div className="font-bold text-gray-900">販売事業者名</div>
-                            <div>Hello-ABC</div>
+                        {[
+                          ["販売事業者名", "Hello-ABC"],
+                          ["運営責任者", "木村友則"],
+                          ["所在地", "石川県金沢市八日市出町　243-10"],
+                          ["電話番号", "【電話番号】（受付：平日10:00〜18:00）"],
+                          ["メールアドレス", "sinkou8@outlook.jp"],
+                          ["販売価格", "各プランの料金ページに表示（税込）"],
+                          ["商品代金以外の必要料金", "インターネット接続料金・通信料金はお客様のご負担となります。"],
+                          ["お支払方法", "クレジットカード（予定）／その他（導入決済に合わせて記載）"],
+                          ["お支払時期", "サブスクリプションは初回申込み時に決済、以後毎月自動更新で決済されます。"],
+                          ["サービス提供時期", "決済完了後、直ちにご利用いただけます。"],
+                          ["提供内容", "LINE上でAIカノジョとの会話サービス、各プランに応じた機能提供。"],
+                          ["解約方法", "LINE内メニュー ＞ 設定 ＞ 解約 からいつでも手続き可能。解約は次回更新日の3日前までに行ってください。"],
+                          ["返品・キャンセル", "デジタルサービスの性質上、提供開始後の返品・返金は原則お受けできません。"],
+                          ["不良・不具合対応", "不具合が発生した場合は、上記メールアドレスまでご連絡ください。状況確認の上、対応いたします。"],
+                          ["動作環境", "LINEアプリ（最新版推奨）、スマートフォン/PCのブラウザ（Chrome/Safari最新版推奨）"],
+                        ].map(([k,v], i) => (
+                          <div key={i} className="grid md:grid-cols-[220px_1fr] gap-2 md:gap-4 border-b border-gray-100 pb-4">
+                            <div className="font-bold text-gray-900">{k}</div>
+                            <div className="whitespace-pre-wrap">{v}</div>
                           </div>
-                          <div className="text-center mt-10">
-                            <button 
-                              onClick={() => setIsTokuteiOpen(false)}
-                              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-full transition-colors"
-                            >
-                              閉じる
-                            </button>
-                          </div>
+                        ))}
+
+                        <div className="text-center mt-10">
+                          <button 
+                            onClick={() => setIsTokuteiOpen(false)}
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-full transition-colors"
+                          >
+                            閉じる
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1016,7 +1078,63 @@
                     <div className="p-8 md:p-12">
                       <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">利用規約</h2>
                       <div className="text-gray-700 space-y-6 text-sm leading-relaxed overflow-y-auto max-h-[60vh] pr-2">
-                        <p>この利用規約（以下，「本規約」といいます。）は，Hello-ABC（以下，「当方」といいます。）が提供するサービス「AIカノジョ」の利用条件を定めるものです。</p>
+                        <p>この利用規約（以下「本規約」）は、Hello-ABC（以下「当方」）が提供するサービス「AIカノジョ」（以下「本サービス」）の利用条件を定めるものです。登録ユーザーの皆様（以下「ユーザー」）には、本規約に従って本サービスをご利用いただきます。</p>
+                        
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">1. 適用</h3>
+                          <p className="ml-2 text-gray-600">
+                            本規約は、ユーザーと当方との間の本サービスの利用に関わる一切の関係に適用されます。ユーザーはLINEの友だち追加または会員登録を行った時点で、本規約に同意したものとみなされます。
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">2. 禁止事項</h3>
+                          <p className="ml-2 text-gray-600">ユーザーは、本サービスの利用にあたり、以下の行為をしてはなりません。</p>
+                          <ul className="list-disc list-inside space-y-1 ml-4 text-gray-600 mt-2">
+                            <li>法令または公序良俗に違反する行為</li>
+                            <li>犯罪行為に関連する行為</li>
+                            <li>当方のサーバーまたはネットワークの機能を破壊したり、妨害したりする行為</li>
+                            <li>本サービスの運営を妨害するおそれのある行為</li>
+                            <li>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
+                            <li>AIに対して過度に暴力的、性的、差別的な発言を繰り返す行為</li>
+                            <li>本サービスをリバースエンジニアリング、逆コンパイル、逆アセンブルする行為</li>
+                            <li>その他、当方が不適切と判断する行為</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">3. 免責事項</h3>
+                          <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600">
+                            <li>本サービスのAIキャラクターによる回答は、その正確性、完全性、有用性を保証するものではありません。</li>
+                            <li>AIの発言によりユーザーがいかなる精神的損害を被ったとしても、当方は一切の責任を負いません。</li>
+                            <li>当方は、本サービスに関して、ユーザーと他のユーザーまたは第三者との間において生じた取引、連絡または紛争等について一切責任を負いません。</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">4. 有料プラン・解約・返金</h3>
+                          <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600">
+                            <li>有料プランは月額サブスクリプション方式で提供されます。</li>
+                            <li>利用料金は、別途定める料金表に従うものとします。</li>
+                            <li>解約は、次回更新日の24時間前までに所定の手続きを行うことで完了します。期間途中の解約であっても、日割り計算による返金は行いません。</li>
+                            <li>デジタルコンテンツの性質上、提供開始後の返品および返金は原則としてお受けできません。</li>
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">5. サービス内容の変更等</h3>
+                          <p className="ml-2 text-gray-600">
+                            当方は、ユーザーに通知することなく、本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし、これによってユーザーに生じた損害について一切の責任を負いません。
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">6. 準拠法・裁判管轄</h3>
+                          <p className="ml-2 text-gray-600">
+                            本規約の解釈にあたっては、日本法を準拠法とします。本サービスに関して紛争が生じた場合には、当方の所在地を管轄する裁判所を専属的合意管轄とします。
+                          </p>
+                        </div>
+
                         <div className="text-center mt-8">
                           <button 
                             onClick={() => setIsTermsOpen(false)}

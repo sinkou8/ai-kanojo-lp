@@ -107,8 +107,8 @@
             period: "/月",
             badge: "彼女だけの特別を、あなたに。",
             buttonText: "恋人コースを始める",
-            // ★ここに実際の決済URL（Stripeなど）を設定してください
-            url: "https://buy.stripe.com/test_dummy_link", 
+            // ★決済URL（univa.cc）を設定
+            url: "https://univa.cc/6Ya_5o", 
             isPremium: true,
             features: [
               "恋人だけの甘い会話モード解放",
@@ -730,26 +730,31 @@
                       </div>
                       
                       {/* Character Selector (Grid Layout) */}
-                      <div className="grid grid-cols-4 gap-3 mb-6 w-full">
+                      <div className="grid grid-cols-4 gap-x-2 gap-y-4 mb-6 w-full">
                         {CHARACTERS.map((char, index) => (
-                            <button
-                            key={char.id}
-                            onClick={() => setActiveCharIndex(index)}
-                            className={`w-16 h-16 rounded-full border-2 transition-all duration-200 overflow-hidden bg-white mx-auto ${
-                                activeCharIndex === index
-                                ? 'border-blue-500 scale-110 shadow-lg ring-2 ring-blue-200'
-                                : 'border-gray-200 opacity-80 hover:opacity-100'
-                            }`}
-                            type="button"
-                            title={char.name}
-                            >
-                            <SafeImage
-                                src={char.image}
-                                alt={char.name}
-                                className="w-full h-full object-cover"
-                                referrerPolicy="no-referrer"
-                            />
-                            </button>
+                            <div key={char.id} className="flex flex-col items-center group cursor-pointer" onClick={() => setActiveCharIndex(index)}>
+                                <button
+                                    className={`w-14 h-14 md:w-16 md:h-16 rounded-full border-2 transition-all duration-200 overflow-hidden bg-white mb-1 ${
+                                        activeCharIndex === index
+                                        ? 'border-blue-500 scale-110 shadow-lg ring-2 ring-blue-200'
+                                        : 'border-gray-200 opacity-80 group-hover:opacity-100'
+                                    }`}
+                                    type="button"
+                                    title={char.name}
+                                >
+                                    <SafeImage
+                                        src={char.image}
+                                        alt={char.name}
+                                        className="w-full h-full object-cover"
+                                        referrerPolicy="no-referrer"
+                                    />
+                                </button>
+                                <span className={`text-[10px] md:text-xs font-bold text-center leading-tight transition-colors ${
+                                    activeCharIndex === index ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'
+                                }`}>
+                                    {char.name.split(' ')[0]}
+                                </span>
+                            </div>
                         ))}
                       </div>
                       <p className="text-xs text-gray-400 text-center mb-6">タップしてパートナーを選択</p>
@@ -1037,7 +1042,6 @@
                           ["お支払方法", "クレジットカード（予定）／その他（導入決済に合わせて記載）"],
                           ["お支払時期", "サブスクリプションは初回申込み時に決済、以後毎月自動更新で決済されます。"],
                           ["サービス提供期間", "本サービスは月額課金制です。\nお申し込み日を起算日とし、1か月単位で自動更新されます。"],
-                          ["提供内容", "LINE上でAIカノジョとの会話サービス、各プランに応じた機能提供。"],
                           ["解約・退会について", "解約をご希望の場合は、次回更新日の３日までに所定の解約手続きを行ってください。\n更新日３日までに解約された場合、翌月以降の課金は発生いたしません。\n日割り・月割りでの返金は承っておりません。"],
                           ["返品・キャンセル", "デジタルサービスの性質上、提供開始後の返品・返金は原則お受けできません。"],
                           ["不良・不具合対応", "不具合が発生した場合は、上記メールアドレスまでご連絡ください。状況確認の上、対応いたします。"],
@@ -1297,7 +1301,7 @@
                     {/* AI Kareshi Link in Footer */}
                     <div className="mt-4">
                         <a href={AI_KARESHI_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-pink-400 hover:text-pink-300 border-b border-pink-900 pb-0.5">
-                            姉妹アプリ：AIカレシはこちら
+                           姉妹アプリ：AIカレシはこちら
                         </a>
                     </div>
                   </div>

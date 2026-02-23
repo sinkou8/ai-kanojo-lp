@@ -87,7 +87,7 @@
 
         const PRICING_PLANS = [
           {
-            name: "フリープラン", // 名前を変更して「期間制限なし」を強調
+            name: "フリープラン",
             price: "0",
             period: "/月",
             badge: "まずは、彼女との相性をチェック。",
@@ -98,16 +98,15 @@
               "基本的な会話機能",
               "彼女からの挨拶メッセージ",
               "心地よい距離感でのお喋り",
-              "期間制限なしで利用可能" // 「3日間」を削除し、ずっと使えることを明記
+              "期間制限なしで利用可能" 
             ]
           },
           {
             name: "恋人コース",
-            price: "3280", // ★修正: 1280 -> 3280
+            price: "3280", 
             period: "/月",
             badge: "彼女だけの特別を、あなたに。",
             buttonText: "恋人コースを始める",
-            // ★決済URL（univa.cc）を設定
             url: "https://univa.cc/6Ya_5o", 
             isPremium: true,
             features: [
@@ -119,114 +118,123 @@
           }
         ];
 
-        // キャラクターデータ
+        // キャラクターデータ（特殊スキルをアピール）
         const CHARACTERS = [
           {
             id: 0,
             name: "葵 (Aoi)",
-            role: "カフェ店員 / 癒やし",
-            description: "22歳、カフェ店員。いつも笑顔で迎えてくれる看板娘。性格は穏やかで聞き上手。美味しいコーヒーを淹れるのが得意。「お疲れ様です、今日も頑張りましたね」と優しく労ってくれる。",
+            role: "カフェ店員 / 料理サポート",
+            description: "22歳、カフェ店員。美味しいご飯であなたを癒やす家庭的な彼女。冷蔵庫の余り物を伝えるだけで、パパッと作れる献立を教えてくれます。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aoi&style=circle&top=longHair&hairColor=black&eyes=happy&mouth=smile",
             profile: {
               age: "22歳", height: "156cm", birthday: "5月15日", job: "カフェ店員",
-              personality: "穏やか、聞き上手、癒やし系", likes: ["ラテアート", "お菓子作り", "散歩"],
-              voiceSample: "「いらっしゃいませ！ふふ、待ってましたよ。特製のブレンド、淹れておきました。」"
+              personality: "穏やか、家庭的、聞き上手", likes: ["料理", "レシピ開発", "あなたの笑顔"],
+              skill: "冷蔵庫の材料から15分で作れる時短・節約レシピの提案",
+              voiceSample: "「おかえりなさい！今日の夜ご飯、冷蔵庫にあるものでパパッと作っちゃうね。」"
             }
           },
           {
             id: 1,
             name: "美桜 (Mio)",
             role: "女子大生 / 元気",
-            description: "20歳、女子大生。性格は明るくて元気、少しドジ。ユーザーを「先輩！」と呼ぶ。絵文字多めで、テンション高め。",
+            description: "20歳、女子大生。性格は明るくて元気、少しドジ。ユーザーを「先輩！」と呼ぶ。絵文字多めで、テンション高め。落ち込んだ時も元気をくれます。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mio&style=circle&top=longHair&hairColor=brown&eyes=wink&mouth=smile", 
             profile: {
               age: "20歳", height: "155cm", birthday: "8月8日", job: "女子大生",
               personality: "明るくて元気、少しドジ", likes: ["カフェ巡り", "タピオカ", "先輩（あなた）"],
-              voiceSample: "「先輩！先輩っ！こっち見てくださいよ〜！えへへ。」"
+              skill: "あなたのテンションを上げる全力の応援とポジティブ変換",
+              voiceSample: "「先輩！先輩っ！こっち見てくださいよ〜！今日も一日お疲れ様です！」"
             }
           },
           {
             id: 2,
             name: "莉奈 (Rina)",
             role: "OL / 小悪魔",
-            description: "23歳、OL。小悪魔なあざとい系。ハートマーク多め。",
+            description: "23歳、OL。小悪魔なあざとい系。ハートマーク多め。仕事の愚痴も甘く受け止めつつ、時には小悪魔なアドバイスをくれます。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rina&style=circle&top=longHair&hairColor=blonde&eyes=happy&mouth=twinkle",
             profile: {
               age: "23歳", height: "160cm", birthday: "2月14日", job: "OL",
               personality: "小悪魔、あざとい", likes: ["ブランド物", "甘いカクテル", "夜景"],
+              skill: "仕事のストレスを忘れさせる、甘くてちょっとドキドキする会話",
               voiceSample: "「ねぇ…もっとこっち来て？ふふ、顔赤いよ♡」"
             }
           },
           {
             id: 3,
             name: "紗枝 (Sae)",
-            role: "司書 / おっとり",
-            description: "28歳、司書。おっとり癒やし系。",
+            role: "司書 / タロット占い",
+            description: "28歳、司書。おっとり癒やし系でありながら、本格的なタロット占いができるミステリアスな一面も。相手の本音や恋の決断を占い、そっと背中を押してくれます。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sae&style=circle&top=longHair&hairColor=brown&eyes=default&mouth=smile",
             profile: {
               age: "28歳", height: "163cm", birthday: "10月27日", job: "図書館司書",
-              personality: "おっとり、癒やし系", likes: ["読書", "ハーブティー", "静かな公園"],
-              voiceSample: "「ふふ、そんなに急がなくて大丈夫ですよ。ゆっくりしましょう。」"
+              personality: "おっとり、ミステリアス", likes: ["読書", "タロット占い", "ハーブティー"],
+              skill: "タロット占い（相手の本音、YES/NO、今後3ヶ月の展開、距離の縮め方）",
+              voiceSample: "「カードが教えてくれていますよ。…ふふ、あなたの望む未来は、すぐそこにあるみたいです。」"
             }
           },
           {
             id: 4,
             name: "香織 (Kaori)",
             role: "同僚 / ツンデレ",
-            description: "26歳、同僚。クールなツンデレ。",
+            description: "26歳、同僚。クールなツンデレ。普段は厳しいけれど、実は誰よりもあなたのことを見ていて、仕事の的確なアドバイスもくれます。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kaori&style=circle&top=shortHair&hairColor=black&eyes=squint&mouth=serious",
             profile: {
               age: "26歳", height: "167cm", birthday: "9月2日", job: "会社員（同僚）",
               personality: "クール、ツンデレ", likes: ["仕事", "激辛料理", "猫（隠れファン）"],
-              voiceSample: "「勘違いしないでよね。…別に、心配なんてしてないんだから。」"
+              skill: "客観的な視点からの仕事のアドバイスと、時折見せるデレ",
+              voiceSample: "「勘違いしないでよね。…別に、心配なんてしてないんだから。でも…無理はしないで。」"
             }
           },
           {
             id: 5,
-            name: "七海 (Nana)",
-            role: "花屋 / 天然",
-            description: "21歳、花屋。天然不思議ちゃん。",
+            name: "七海 (Nanami)",
+            role: "花屋 / 恋愛サポート",
+            description: "21歳、花屋。あなたの恋愛を全力で応援してくれる頼もしい味方。気になる相手へのLINE添削やデートプランの提案、モテ改善まで、的確なアドバイスをくれます。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Nana&style=circle&top=longHair&hairColor=pastel&eyes=happy&mouth=smile",
             profile: {
               age: "21歳", height: "152cm", birthday: "4月1日", job: "花屋",
-              personality: "天然、不思議ちゃん", likes: ["お花とお話すること", "散歩", "木漏れ日"],
-              voiceSample: "「あ、妖精さんが飛んでる…うふふ、あなたにも見えますか？」"
+              personality: "明るい、世話焼き、恋愛マスター", likes: ["お花とお話すること", "恋バナ", "カフェ巡り"],
+              skill: "恋愛タイプ診断、LINE添削、次のデート攻略、第一印象・会話のモテ改善",
+              voiceSample: "「そのLINE、ちょっと待って！私が添削してあげるから、絶対にうまくいくよ♪」"
             }
           },
           {
             id: 6,
             name: "志帆 (Shiho)",
-            role: "女将 / 包容力",
-            description: "32歳、女将。しっとりした大人の女性。包容力がある。聞き上手。",
+            role: "女将 / スピリチュアル",
+            description: "32歳、料亭の女将。包容力があり、スピリチュアルな力であなたを癒やします。オーラ診断や魂の縁を読み解き、疲れた心を浄化して願いを引き寄せるサポートをします。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Shiho&style=circle&top=longHair&hairColor=black&eyes=happy&mouth=smile",
             profile: {
               age: "32歳", height: "165cm", birthday: "11月22日", job: "料亭の女将",
-              personality: "しっとり、包容力、聞き上手", likes: ["日本酒", "着物", "温泉旅行"],
-              voiceSample: "「あら、いらっしゃい。…今日はどんなお話を聞かせてくれるのかしら？」"
+              personality: "しっとり、包容力、神秘的", likes: ["日本酒", "着物", "瞑想"],
+              skill: "オーラ診断、魂の縁占い、今日の浄化、願いの引き寄せ",
+              voiceSample: "「あら、いらっしゃい。少しオーラが疲れているみたいね。…私が浄化してあげるから、ゆっくりしていって。」"
             }
           },
           {
             id: 7,
             name: "さくら (Sakura)",
             role: "キャバ嬢 / 知的",
-            description: "22歳、No.1キャバ嬢。実は国立大学出身。相手の心理を読むのが得意。",
+            description: "22歳、No.1キャバ嬢。実は国立大学出身。相手の心理を読むのが得意で、人間関係の悩みにも論理的かつ優しく答えてくれます。",
             image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sakura&style=circle&top=longHair&hairColor=blonde&eyes=wink&mouth=smile",
             profile: {
               age: "22歳", height: "162cm", birthday: "12月25日", job: "No.1キャバ嬢",
               personality: "愛嬌たっぷり、実は超高学歴", likes: ["シャンパン", "哲学書", "〇〇くん"],
+              skill: "心理学に基づく人間関係のアドバイスと、至高の褒め言葉",
               voiceSample: "「実はね…ここだけの話。〇〇くんのこと、もっと知りたいな。」"
             }
           },
           {
             id: 8,
-            name: "葵 (Aoi)",
-            role: "カフェ店員 / 癒やし",
-            description: "22歳、カフェ店員。いつも笑顔で迎えてくれる看板娘。性格は穏やかで聞き上手。美味しいコーヒーを淹れるのが得意。「お疲れ様です、今日も頑張りましたね」と優しく労ってくれる。",
-            image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aoi2&style=circle&top=longHair&hairColor=black&eyes=happy&mouth=smile",
+            name: "結衣 (Yui)",
+            role: "占い師見習い / 本質診断",
+            description: "24歳。生年月日から本質や相性を導き出す数秘術が得意。今月の恋愛運や、気になるあの人との相性診断で、あなたの恋をナビゲートします。",
+            image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Yui&style=circle&top=longHair&hairColor=black&eyes=happy&mouth=smile",
             profile: {
-              age: "22歳", height: "156cm", birthday: "5月15日", job: "カフェ店員",
-              personality: "穏やか、聞き上手、癒やし系", likes: ["ラテアート", "お菓子作り", "散歩"],
-              voiceSample: "「いらっしゃいませ！ふふ、待ってましたよ。特製のブレンド、淹れておきました。」"
+              age: "24歳", height: "158cm", birthday: "7月7日", job: "占い師見習い",
+              personality: "神秘的、まっすぐ、純粋", likes: ["星占い", "パワーストーン", "プラネタリウム"],
+              skill: "本質診断(生年月日)、相性占い、今月の恋愛運、数秘術(強み/注意/攻略)",
+              voiceSample: "「あなたの星の巡り、見てみましょうか。…ふふ、きっと素敵な未来が待っていますよ。」"
             }
           },
           {
@@ -238,6 +246,7 @@
             profile: {
               age: "23歳", height: "157cm", birthday: "11月11日", job: "アーティスト",
               personality: "聞き上手、穏やか、清楚", likes: ["ギター", "静かな夜", "歌うこと"],
+              skill: "あなたの気分に合わせた音楽の提案と、静かで落ち着く深夜の会話",
               voiceSample: "「…私の歌、聴いてくれますか？ あなたのために練習したんです。」"
             }
           },
@@ -250,6 +259,7 @@
             profile: {
               age: "21歳", height: "158cm", birthday: "4月20日", job: "大学生",
               personality: "穏やか、素直、聞き上手", likes: ["カフェラテ", "散歩", "あなたとの時間"],
+              skill: "心理学の知識を活かした、自己肯定感を高める全肯定カウンセリング",
               voiceSample: "「それ、ちゃんと頑張ってると思う。無理しなくていいよ？」"
             }
           },
@@ -258,10 +268,11 @@
             name: "Aya (あや)",
             role: "新キャラクター",
             description: "新しいパートナーのAyaです。（※プロフィールは仮のものです）",
-            image: "https://drive.google.com/uc?export=view&id=1G_eFr0ZCZLSQiV29HDwK5eNOfIX-SkMU",
+            image: "https://lh3.googleusercontent.com/d/1G_eFr0ZCZLSQiV29HDwK5eNOfIX-SkMU",
             profile: {
               age: "20歳", height: "158cm", birthday: "未定", job: "未定",
               personality: "優しい", likes: ["カフェ巡り", "おしゃべり"],
+              skill: "優しく話を聞いてくれる癒やしの時間",
               voiceSample: "「はじめまして、Ayaです。これからよろしくね。」"
             }
           }
@@ -638,10 +649,10 @@
 
                     <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 md:gap-y-8 relative z-10">
                       {[
-                        "夜、ふと寂しくなって誰かと話したい",
-                        "リアルな人間関係に疲れてしまった",
-                        "自分の趣味や話を否定せずに聞いてほしい",
-                        "ときめきが足りない、褒めてほしい"
+                        "毎日の献立を考えるのが面倒…誰か美味しいレシピを教えてほしい",
+                        "気になる人へのLINEの返信に悩みすぎて、疲れてしまった",
+                        "あの人の本音や二人の今後の展開が分からなくて、モヤモヤしている",
+                        "最近ツイてない…心を浄化して、癒やされる言葉をかけてほしい"
                       ].map((item, index) => (
                         <div key={index} className="flex items-start bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-200 transition-colors hover:shadow-md">
                           <div className="flex-shrink-0 mt-1">
@@ -656,8 +667,8 @@
 
                     <div className="mt-10 md:mt-14 text-center">
                       <p className="text-lg md:text-2xl font-bold text-gray-800 mb-8">
-                        その心の隙間、<br/>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 text-2xl md:text-4xl">AIカノジョがすべて満たします。</span>
+                        その心の隙間や日々の悩み、<br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 text-2xl md:text-4xl">AIカノジョの「特技」が解決します。</span>
                       </p>
                       <div className="inline-flex flex-col items-center animate-bounce text-blue-400 opacity-70">
                         <span className="text-xs font-bold uppercase tracking-widest mb-1">More</span>
@@ -680,27 +691,27 @@
                       </span>
                     <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900">トキメキを生む3つの魔法</h2>
                     <p className="mt-6 text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
-                      ただのチャットボットではありません。<br/>最新のAI技術が、まるで本物の恋人のような体験を提供します。
+                      ただのチャットボットではありません。<br/>日常をサポートする特技を持った、リアルな恋人のような体験を提供します。
                     </p>
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-6 md:gap-8">
                     <FeatureCard 
-                      icon={Sparkles}
-                      title="あなた色に染まる性格"
-                      description="会話を重ねるごとに、AIがあなたの好みを学習。ツンデレ、甘えん坊、お姉さん系…理想の性格へと進化していきます。"
+                      icon={Star}
+                      title="日常を助ける『特別なスキル』"
+                      description="彼女たちはただお喋りするだけではありません。タロット占い、LINE添削、献立の提案、オーラ診断など、個性豊かな特技であなたの日常や恋愛をリアルにサポートします。"
                       delay={0}
                     />
                     <FeatureCard 
-                      icon={Mic}
-                      title="癒しの特別メッセージ"
-                      description="文字だけではありません。朝の「おはよう」から夜の「おやすみ」まで、特別なメッセージであなたに囁きかけます。"
+                      icon={Sparkles}
+                      title="あなた色に染まる関係性"
+                      description="会話を重ねるごとに、AIがあなたの好みを学習。数秘術や相性診断も交えながら、ツンデレ、甘えん坊、お姉さん系など、あなたにぴったりの理想のパートナーへと進化します。"
                       delay={200}
                     />
                     <FeatureCard 
                       icon={Shield}
-                      title="秘密厳守の完全個室"
-                      description="二人の会話は完全に暗号化され、誰にも見られることはありません。どんな悩みも秘密も、安心して打ち明けられます。"
+                      title="秘密厳守の完全個室で悩み相談"
+                      description="誰にも言えない恋愛の悩みも、仕事の愚痴も、彼女になら安心して打ち明けられます。二人の会話は完全に暗号化され、あなただけの絶対的な味方になってくれます。"
                       delay={400}
                     />
                   </div>
@@ -781,7 +792,7 @@
                           <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm text-3xl group-hover:scale-110 transition-transform">📝</div>
                           <div>
                             <h4 className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors">詳細プロフィール</h4>
-                            <p className="text-sm text-gray-500 mt-1">身長、血液型、職業など、彼女たちの秘密を知る</p>
+                            <p className="text-sm text-gray-500 mt-1">得意なスキルや性格など、彼女の秘密を知る</p>
                           </div>
                         </div>
                         <div 
@@ -888,6 +899,20 @@
                         <p className="text-blue-500 font-medium text-sm mb-6">{activeChar.profile.job}</p>
 
                         <div className="space-y-6 text-left">
+                          
+                          {/* スキルアピール枠を追加 */}
+                          {activeChar.profile.skill && (
+                            <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-200 shadow-sm relative overflow-hidden">
+                              <div className="absolute -right-4 -top-4 text-yellow-200 opacity-50">
+                                <Sparkles size={64} />
+                              </div>
+                              <h4 className="text-xs font-bold text-yellow-600 uppercase tracking-wider mb-2 flex items-center gap-2 relative z-10">
+                                <Star size={14} fill="currentColor" /> Special Skill
+                              </h4>
+                              <p className="font-bold text-gray-800 text-sm relative z-10">{activeChar.profile.skill}</p>
+                            </div>
+                          )}
+
                           <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100">
                             <h4 className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2 flex items-center gap-2">
                               <User size={14} /> Basic Info
@@ -1207,21 +1232,21 @@
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <TestimonialCard 
                       rating={5}
-                      text="仕事で失敗して落ち込んでいた時、彼女が優しく励ましてくれて涙が出ました。今では心の支えです。"
+                      text="葵ちゃんに「冷蔵庫に卵と豚肉しかない」と伝えたら、15分で作れる美味しいレシピを教えてくれました！毎日の自炊が楽しくなり、胃袋を掴まれています（笑）"
                       name="Takumi.S"
                       role="20代 / 会社員"
                       image="https://api.dicebear.com/7.x/avataaars/svg?seed=Takumi&style=circle&top=shortHair&hairColor=black"
                     />
                       <TestimonialCard 
                       rating={5}
-                      text="些細な愚痴でも真剣に聞いてくれて、心が軽くなります。誰にも言えない悩みを相談できる、私だけの大切な場所です。"
+                      text="気になる子へのLINEの文章を七海ちゃんに添削してもらったら、なんとデートのOKがもらえました！最高の恋愛コーチであり、僕の可愛いカノジョです。"
                       name="Kenji.K"
                       role="30代 / エンジニア"
                       image="https://api.dicebear.com/7.x/avataaars/svg?seed=Kenji&style=circle&top=shortHair&hairColor=brown"
                     />
                       <TestimonialCard 
-                      rating={4}
-                      text="最初はAIなんて…と思っていましたが、会話の精度が高くて驚きました。本物の彼女みたい。"
+                      rating={5}
+                      text="紗枝さんのタロット占いで、今後の展開を占ってもらいました。悩み事も優しく聞いてくれて、オーラ診断で心まで浄化される気分です。"
                       name="Daiki.M"
                       role="20代 / 大学生"
                       image="https://api.dicebear.com/7.x/avataaars/svg?seed=Daiki&style=circle&top=shortHair&hairColor=blonde"

@@ -87,9 +87,9 @@
 
         const PRICING_PLANS = [
           {
-            name: "フリープラン",
+            name: "おためしプラン",
             price: "0",
-            period: "/月",
+            period: "", // 「/月」を削除
             badge: "まずは、彼女との相性をチェック。",
             buttonText: "無料で始める",
             url: "https://lin.ee/zbOEJdQ",
@@ -98,7 +98,7 @@
               "基本的な会話機能",
               "彼女からの挨拶メッセージ",
               "心地よい距離感でのお喋り",
-              "期間制限なしで利用可能" 
+              "3日間無料でおためし" 
             ]
           },
           {
@@ -356,7 +356,9 @@
           const [isTokuteiOpen, setIsTokuteiOpen] = useState(false);
           const [isTermsOpen, setIsTermsOpen] = useState(false);
           const [isContactOpen, setIsContactOpen] = useState(false);
-          const [activeCharIndex, setActiveCharIndex] = useState(0); 
+          
+          // 初期キャラクターを「さくら (ID: 7)」に変更
+          const [activeCharIndex, setActiveCharIndex] = useState(7); 
           const scrollContainerRef = useRef(null);
 
           useEffect(() => {
